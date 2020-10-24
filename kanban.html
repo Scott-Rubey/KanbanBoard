@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="kanban.css" />
+    <title>Project Board</title>
+  </head>
+  <nav id="sidebar">
+    <ul>
+      <li><a href="#" class="menuItem">Board</a></li>
+      <li><a href="#" class="menuItem">Calendar</a></li>
+      <li><a href="#" class="menuItem">Convo</a></li>
+    </ul>
+  </nav>
+  <body>
+    <div class = "line"></div>
+    <div class="main">
+    <h2>Project Name</h2>
+    <section class="flex-container1">
+      <div class="flexlabel1">Backlog</div>
+      <div class="flexlabel2">In Progress</div>
+      <div class="flexlabel3">Complete</div>
+    </section>
+    <section class="flex-container2">
+      <div class="flex-item item1"></div>
+      <div class="flex-item item2"></div>
+      <div class="flex-item item3"></div>
+      </section>
+    <button type="button" value="addtask">Add Task</button>
+  </div>
+  <script src="kanban.js"></script>
+</body>
+</html>
