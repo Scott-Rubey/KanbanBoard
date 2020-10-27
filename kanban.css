@@ -100,3 +100,8 @@ input.addTask:active {
   background-color: #555;
   transform: translateY(2px);
 }
+
+textarea#newTask {
+  font-size: small;
+  width: 250px;
+}

@@ -7,10 +7,10 @@ addTaskBtn.addEventListener("click", function(e){
 });
 
 function addTaskBox(e){
-//    addTaskBtn.value="pressed";
-    var input = document.createElement('input');
-    input.type="text";
-    input.name="test";
+    var newTask = document.createElement('textarea');
+    newTask.id="newTask";
+    newTask.rows=10;
+    newTask.cols=30;
 
-    return input;
+    return newTask;
 }
