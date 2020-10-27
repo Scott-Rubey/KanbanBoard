@@ -83,7 +83,7 @@ h2 {
   justify-content: space-around;
 }
 
-button {
+input.addTask {
   width: 100px;
   height: 30px;
   margin-left: 11.5%;
@@ -92,11 +92,11 @@ button {
   font-size: small;
 }
 
-button:hover {
+input.addTask:hover {
   background-color: #999;
 }
 
-button:active {
+input.addTask:active {
   background-color: #555;
   transform: translateY(2px);
 }
