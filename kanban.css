@@ -101,7 +101,26 @@ input.addTask:active {
   transform: translateY(2px);
 }
 
-textarea#newTask {
+form#newTaskForm {
+  width: 40%;
+  height: 33vh;
+  background-color: #fff;
+  margin: auto;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 15px;
+  padding: 20px;
+}
+
+h2#newTaskFormHeader {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+input#newTaskBox {
+  width: 200px;
+  height: 30px;
   font-size: small;
-  width: 250px;
+  float: left;
 }
