@@ -30,7 +30,7 @@
                 <th scope="row"><label>Project 1</label></th>
                 <td>Me, Myself, and I</td>
                 <td>1/1/1</td>
-                <td><button class="btn btn-light">...</button></td>
+                <td><button class="btn btn-light" data-toggle="modal" data-target="#exampleModal">...</button></td>
               </tr>
               <tr>
                 <th scope="row">Project 2</th>
@@ -47,6 +47,39 @@
             </tbody>
           </table>
     </section>
+
+    <!-- Modal: see https://getbootstrap.com/docs/4.5/components/modal/ for details .. this section will need
+    to be modified to use data attributes in order to properly modifiy the correct project's settings... -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">Project Name</label>
+                        <input class="form-control form-control-lg" type="text" placeholder="Project Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">List of users to invite, separated by semicolons:</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <section id="projects-CTA">
         <!-- only displayed if no projects are yet created -->
         <div class="jumbotron">
