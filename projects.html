@@ -14,56 +14,48 @@
               <button class="btn btn-primary">New Project</button>
             </div>
           </div>
-        <div class="row header">
-            <div class="col-sm">
-              Project Name
-            </div>
-            <div class="col-sm">
-              Users
-            </div>
-            <div class="col-sm">
-              Edit Project Properties
-            </div>
-          </div>
-          <hr>
     </section>
     <section id="list-items" class="container-fluid">
-        <div class="row">
-            <div class="col-sm">
-              Project 1
-            </div>
-            <div class="col-sm">
-              Me, Myself, and I
-            </div>
-            <div class="col-sm">
-                <button class="btn btn-light">...</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm">
-              Project 2
-            </div>
-            <div class="col-sm">
-              Me, Myself, and I
-            </div>
-            <div class="col-sm">
-                <button class="btn btn-light">...</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm">
-              Project 3
-            </div>
-            <div class="col-sm">
-              Me, Myself, and I
-            </div>
-            <div class="col-sm">
-                <button class="btn btn-light">...</button>
-            </div>
-        </div>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Project Name</th>
+                <th scope="col">Users</th>
+                <th scope="col">Modified</th>
+                <th scope="col">Settings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><label>Project 1</label></th>
+                <td>Me, Myself, and I</td>
+                <td>1/1/1</td>
+                <td><button class="btn btn-light">...</button></td>
+              </tr>
+              <tr>
+                <th scope="row">Project 2</th>
+                <td>Me, Myself, and I</td>
+                <td>1/1/1</td>
+                <td><button class="btn btn-light">...</button></td>
+              </tr>
+              <tr>
+                <th scope="row">Project 3</th>
+                <td>Me, Myself, and I</td>
+                <td>1/1/1</td>
+                <td><button class="btn btn-light">...</button></td>
+              </tr>
+            </tbody>
+          </table>
     </section>
     <section id="projects-CTA">
         <!-- only displayed if no projects are yet created -->
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome!</h1>
+            <p class="lead">To get started, you'll need to create a project or get invited to somebody else's project.</p>
+            <hr class="my-4">
+            <p>If you want to join a project, contact that project's owner and ask them.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">Create Project</a>
+          </div>
     </section>
 
     <!-- Bootstrap includes; belongs near end of body element -->
