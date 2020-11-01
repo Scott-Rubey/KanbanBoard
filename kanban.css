@@ -92,24 +92,26 @@ input.addTask {
   font-size: small;
 }
 
-input.addTask:hover {
+input.addTask:hover,
+input#submitBtn:active {
   background-color: #999;
 }
 
-input.addTask:active {
+input.addTask:active,
+input#submitBtn:active {
   background-color: #555;
   transform: translateY(2px);
 }
 
 form#newTaskForm {
   width: 40%;
-  height: 33vh;
-  background-color: #fff;
+  height: 40vh;
+  background-color: #aaa;
   margin: auto;
   border: 1px solid black;
   border-radius: 5px;
-  font-size: 15px;
   padding: 20px;
+  box-shadow: 10px 10px 8px #888;
 }
 
 h2#newTaskFormHeader {
@@ -119,8 +121,34 @@ h2#newTaskFormHeader {
 }
 
 input#newTaskBox {
-  width: 200px;
+  width: 75%;
   height: 30px;
   font-size: small;
-  float: left;
+  margin-left: 45px;
+}
+
+::placeholder {
+  color: #888;
+}
+
+select#priorityBtn {
+  font-size: small;
+  height: 30px;
+  width: 75%;
+  margin-left: 45px;
+}
+
+textArea#description {
+  font-size: small;
+  width: 75%;
+  margin-left: 45px;
+  margin-top: 5px;
+}
+
+input#submitBtn {
+  margin-left: 45px;
+  margin-top: 15px;
+  height: 30px;
+  align-content: center;
+  font-size: small;
 }
