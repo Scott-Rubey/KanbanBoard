@@ -110,7 +110,26 @@ function addButtons(newTaskForm){
 
 //credit to https://www.w3schools.com/howto/howto_js_draggable.asp for dragging basics
 function drag(form) {
+  var input = document.querySelector("input");
+  var priority = document.getElementById("priorityBtn");
+  var option = document.getElementsByClassName("dropdown-item");
+
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+  //allow user to input task, priority and description without getting stuck in drag mode
+  if(input)
+    input.onmousedown = prevent;
+  else if(priority)
+    priority.onmousedown = prevent;
+  else if(option)
+    option.onmousedown = prevent;
+  // otherwise, move the form from anywhere inside the form
+  else if(form)
+    form.onmousedown = dragMouseDown;
+
+  function prevent(event){
+    event.preventDefault();
+  }
 
   //you can drag from anywhere on the form
   form.onmousedown = dragMouseDown;  
@@ -118,11 +137,11 @@ function drag(form) {
   function dragMouseDown(event) {
     event = event || window.event;
     
-    event.preventDefault();
     // get the mouse cursor position at startup:
     pos3 = event.clientX;
     pos4 = event.clientY;
     document.onmouseup = closeDragElement;
+   
     // call function whenever the cursor moves:
     document.onmousemove = elementDrag;    
   }
@@ -130,18 +149,20 @@ function drag(form) {
   function elementDrag(event) {
     event = event || window.event;
     event.preventDefault();
+  
     // calculate the new cursor position:
     pos1 = pos3 - event.clientX;
     pos2 = pos4 - event.clientY;
     pos3 = event.clientX;
     pos4 = event.clientY;
+ 
     // set the element's new position:
     form.style.top = (form.offsetTop - pos2) + "px";
     form.style.left = (form.offsetLeft - pos1) + "px";  
   }
 
   function closeDragElement() {
-    /* stop moving when mouse button is released:*/
+    //stop moving when mouse button is released
     document.onmouseup = null;
     document.onmousemove = null;
   }
