@@ -7,7 +7,7 @@ addTaskBtn.addEventListener("click", function(e){
 });
 
 function createForm(e){
-    var newTaskForm = document.createElement('form');
+    var newTaskForm = document.createElement("form");
     newTaskForm.setAttribute("id", "newTaskForm");
     newTaskForm.setAttribute("class", "popup");
 
@@ -108,43 +108,40 @@ function addButtons(newTaskForm){
     return newTaskForm;
 }
 
-//function credit: https://www.w3schools.com/howto/howto_js_draggable.asp
+//credit to https://www.w3schools.com/howto/howto_js_draggable.asp for dragging basics
 function drag(form) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (document.getElementById("newTaskFormHeader")) {
-    // if present, the header is where you move the DIV from:
-    document.getElementById("newTaskFormHeader").onmousedown = dragMouseDown;
-  } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
-    form.onmousedown = dragMouseDown;
-  }
 
-  function dragMouseDown(form) {
-    form = form || window.event;
-    form.preventDefault();
+  //you can drag from anywhere on the form
+  form.onmousedown = dragMouseDown;  
+
+  function dragMouseDown(event) {
+    event = event || window.event;
+    
+    event.preventDefault();
     // get the mouse cursor position at startup:
-    pos3 = form.clientX;
-    pos4 = form.clientY;
+    pos3 = event.clientX;
+    pos4 = event.clientY;
     document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
+    // call function whenever the cursor moves:
+    document.onmousemove = elementDrag;    
   }
 
-  function elementDrag(form) {
-    form = form || window.event;
-    form.preventDefault();
+  function elementDrag(event) {
+    event = event || window.event;
+    event.preventDefault();
     // calculate the new cursor position:
-    pos1 = pos3 - form.clientX;
-    pos2 = pos4 - form.clientY;
-    pos3 = form.clientX;
-    pos4 = form.clientY;
+    pos1 = pos3 - event.clientX;
+    pos2 = pos4 - event.clientY;
+    pos3 = event.clientX;
+    pos4 = event.clientY;
     // set the element's new position:
     form.style.top = (form.offsetTop - pos2) + "px";
-    form.style.left = (form.offsetLeft - pos1) + "px";
+    form.style.left = (form.offsetLeft - pos1) + "px";  
   }
 
   function closeDragElement() {
-    // stop moving when mouse button is released:
+    /* stop moving when mouse button is released:*/
     document.onmouseup = null;
     document.onmousemove = null;
   }
