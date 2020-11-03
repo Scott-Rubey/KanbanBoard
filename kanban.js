@@ -123,40 +123,37 @@ function drag(form) {
     priority.onmousedown = prevent;
   else if(option)
     option.onmousedown = prevent;
-  // otherwise, move the form from anywhere inside the form
-  else if(form)
-    form.onmousedown = dragMouseDown;
+
+  //otherwise, you can drag from anywhere on the form
+  form.onmousedown = dragMouseDown;  
 
   function prevent(event){
     event.preventDefault();
   }
 
-  //you can drag from anywhere on the form
-  form.onmousedown = dragMouseDown;  
-
   function dragMouseDown(event) {
     event = event || window.event;
-    
-    // get the mouse cursor position at startup:
+
+    // get the mouse cursor position at startup
     pos3 = event.clientX;
     pos4 = event.clientY;
     document.onmouseup = closeDragElement;
-   
-    // call function whenever the cursor moves:
+
+    // call function whenever the cursor moves
     document.onmousemove = elementDrag;    
   }
 
   function elementDrag(event) {
     event = event || window.event;
     event.preventDefault();
-  
-    // calculate the new cursor position:
+
+    // calculate the new cursor position
     pos1 = pos3 - event.clientX;
     pos2 = pos4 - event.clientY;
     pos3 = event.clientX;
     pos4 = event.clientY;
- 
-    // set the element's new position:
+
+    // set the element's new position
     form.style.top = (form.offsetTop - pos2) + "px";
     form.style.left = (form.offsetLeft - pos1) + "px";  
   }
