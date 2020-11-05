@@ -12,22 +12,22 @@
     <link rel="stylesheet" href="kanban.css" />
     <title>Project Board</title>
   </head>
-  <nav id="sidebar">
-    <ul>
-      <li><a href="#" class="menuItem">Board</a></li>
-      <li><a href="#" class="menuItem">Calendar</a></li>
-      <li><a href="#" class="menuItem">Convo</a></li>
-    </ul>
-  </nav>
   <body>
-    <div class = "line"></div>
+    <div class="topnav">
+      <p class = "projectName">Project 1</p>
+      <a href="#signout">Sign out</a>
+      <a href="#convo">Convo</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#board">Board</a>
+    </div>
     <div class="main" id="main">
-    <h2>Project Name</h2>
+    <!--Labels for each column-->
     <section class="flex-container1">
       <div class="flexlabel1">Backlog</div>
       <div class="flexlabel2">In Progress</div>
       <div class="flexlabel3">Complete</div>
     </section>
+    <!--Task columns-->
     <section class="flex-container2">
       <div class="flex-item item1" id="backlog-column"></div>
       <div class="flex-item item2"></div>
