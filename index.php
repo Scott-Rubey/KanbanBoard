@@ -41,7 +41,9 @@
                 url: './includes/post.php', 
                 data: {fname: first, lname: last}, 
                 success: function(data) {
-                    alert(data)
+                    var arr = JSON.parse(data)
+                    document.getElementById('fname').value = arr[0]
+                    document.getElementById('lname').value = arr[1]
                 }
             })
             return false 
