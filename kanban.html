@@ -10,30 +10,31 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="kanban.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <title>Project Board</title>
   </head>
-  <nav id="sidebar">
-    <ul>
-      <li><a href="#" class="menuItem">Board</a></li>
-      <li><a href="#" class="menuItem">Calendar</a></li>
-      <li><a href="#" class="menuItem">Convo</a></li>
-    </ul>
-  </nav>
   <body>
-    <div class = "line"></div>
-    <div class="main" id="main">
-    <h2>Project Name</h2>
+    <nav class="topnav">
+      <p class = "projectName">Project 1</p>
+      <a href="#signout">Sign out</a>
+      <a href="#convo">Convo</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#board">Board</a>
+    </nav>
+    <nav class="main" id="main">
+    <!--Labels for each column-->
     <section class="flex-container1">
-      <div class="flexlabel1">Backlog</div>
-      <div class="flexlabel2">In Progress</div>
-      <div class="flexlabel3">Complete</div>
+      <div class="flexlabel 1">Backlog</div>
+      <div class="flexlabel 2">In Progress</div>
+      <div class="flexlabel 3">Complete</div>
     </section>
+    <!--Task columns-->
     <section class="flex-container2">
       <div class="flex-item item1" id="backlog-column"></div>
       <div class="flex-item item2"></div>
       <div class="flex-item item3"></div>
       </section>
-    <input type="button" id="addTask" class="addTask" value="Add Task" />
+    <input type="button" id="addTask" class="button" value="Add Task" />
   </div>
   <script src="kanban.js"></script>
 </body>
