@@ -11,5 +11,4 @@ $conn = pg_connect(sprintf('host=127.0.0.1 port=5432 dbname=%s user=%s password=
 if(!$conn) {
     die("Database connection unsuccessful.");
 }
-
 ?>
