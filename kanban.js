@@ -33,7 +33,7 @@ function addTaskBox(newTaskForm){
     taskBox.setAttribute("id", "newTaskBox");
     taskBox.setAttribute("placeholder", "Enter task");
     taskBox.setAttribute("required", true);
-    taskBox.setAttribute("class", "newTaskInput")
+    taskBox.setAttribute("class", "newTaskInput");
     newTaskForm.appendChild(taskBox); 
     newTaskForm.innerHTML += "<br>";
 
