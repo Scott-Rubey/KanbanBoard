@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS person (
-    userid SERIAL NOT NULL PRIMARY KEY, 
-    firstname VARCHAR(30) NOT NULL, 
-    lastname VARCHAR(30) NOT NULL, 
-    email VARCHAR(30) NOT NULL
+    userid VARCHAR(200) NOT NULL PRIMARY KEY, 
+    name VARCHAR(100) NOT NULL, 
+    email VARCHAR(40) NOT NULL,
+    imageurl VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS project (
     projectid SERIAL NOT NULL PRIMARY KEY, 
-    userid INT NOT NULL, 
+    userid VARCHAR(200) NOT NULL, 
     projectname VARCHAR(30) NOT NULL, 
 FOREIGN KEY (userid) REFERENCES person (userid) ON DELETE CASCADE 
 );
