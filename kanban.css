@@ -46,11 +46,6 @@
   padding: 40px;
 }
 
-.label {
-  font-size: normal;
-  margin-bottom: -100px;
-}
-
 .flex-item {
   width: 250px;
   height: 70vh;
@@ -154,4 +149,70 @@ textArea#description {
 
 .button.form {
   width: 30%;
+}
+
+/*iPad turned sideways*/
+@media only screen and (max-device-width: 1024px) {
+  .button {
+    margin-left: 11.25%;
+  }
+
+  form#newTaskForm {
+    width: 40%;
+    height: 44vh;
+    top: 225px;
+    left: 305px;
+  }
+
+  .button.form {
+    left: 10px;
+  }
+}
+
+/*iPad turned vertically*/
+@media only screen and (max-device-width: 768px) {
+  .button {
+    margin-left: 10%;
+  }
+
+  form#newTaskForm {
+    width: 50%;
+    height: 40vh;
+    top: 250px;
+    left: 190px;
+  }
+
+  .button.form {
+    left: 16px;
+  }
+}
+
+/*iPhone*/
+@media only screen and (max-device-width: 414px) {
+  .flexlabel {
+    font-size: 17px;
+  }
+  .button {
+    margin-left: 1.5%;
+  }
+
+  form#newTaskForm {
+    width: 79%;
+    height: 45vh;
+    top: 195px;
+    left: 43px;
+  }
+
+  input#newTaskBox,
+  select#priorityBtn,
+  textarea#description {
+    width: 100%;
+    font-size: small;
+    margin-left: auto;
+  }
+
+  .button.form {
+    width: 45%;
+    left: 8px;
+  }
 }

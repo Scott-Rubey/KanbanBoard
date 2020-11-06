@@ -26,18 +26,21 @@ function createForm(e){
     return newTaskForm;
 }
 
+//add the box in which we can enter the name of the task
 function addTaskBox(newTaskForm){
     var taskBox = document.createElement("input");
     taskBox.setAttribute("type", "text");
     taskBox.setAttribute("id", "newTaskBox");
     taskBox.setAttribute("placeholder", "Enter task");
     taskBox.setAttribute("required", true);
+    taskBox.setAttribute("class", "newTaskInput")
     newTaskForm.appendChild(taskBox); 
     newTaskForm.innerHTML += "<br>";
 
     return newTaskForm;
 }
 
+//enter high, medium or low priority
 function addPriorityBox(newTaskForm){
     //add drop down box
     var priorityBtn = document.createElement("select");
@@ -46,7 +49,7 @@ function addPriorityBox(newTaskForm){
 
     //add drop down items
     var div = document.createElement("div");
-    div.setAttribute("class", "dropdownMenu");
+    div.setAttribute("class", "newTaskInput");
     div.setAttribute("aria-labelledby", "dropdownMenuButton");
     newTaskForm.appendChild(div);
 
@@ -71,12 +74,14 @@ function addPriorityBox(newTaskForm){
     return newTaskForm;
 }
 
+//textarea for adding a full description of the new task
 function addDescriptionBox(newTaskForm){
     //create textarea
     var description = document.createElement("textarea");
     description.setAttribute("id", "description");
     description.setAttribute("rows", "4");
     description.setAttribute("placeholder", "Enter details");
+    description.setAttribute("class", "newTaskInput");
 
     //add to form
     newTaskForm.appendChild(description);
