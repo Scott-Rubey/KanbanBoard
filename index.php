@@ -12,43 +12,10 @@
 <body>
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <a href="#" onclick="signOut();">Sign out</a>
-
-    <!-- Just for practice --> 
-    <div class="textbox" style="margin-top: 20px;"> 
-        <form id="foo">
-            <label for="fname">First name:</label>
-            <input type="text" id="fname" name="fname"><br><br>
-            <label for="lname">Last name:</label>
-            <input type="text" id="lname" name="lname"><br><br>
-            <input type="submit" value="Send">
-        </form>
-    </div>
-
-    <p id="test"></p>
     
 </body>
 <script> 
-    $(function() {
-        $('#foo').submit(function(e) {
 
-            e.preventDefault(); 
-
-            var first = $("#fname").val(); 
-            var last = $("#lname").val(); 
-            
-            $.ajax({
-                type: 'POST', 
-                url: './includes/post.php', 
-                data: {fname: first, lname: last}, 
-                success: function(data) {
-                    var arr = JSON.parse(data)
-                    document.getElementById('fname').value = arr[0]
-                    document.getElementById('lname').value = arr[1]
-                }
-            })
-            return false 
-        })
-    })
 </script> 
     <!-- Just for practice --> 
 </html>

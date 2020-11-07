@@ -13,7 +13,7 @@ function onSignIn(googleUser) {
             imageurl: profileImage
         }, 
         success: function(data) {
-            window.location.href = data 
+            window.location.href = data
         },
         error: () => {
             alert("Error logging in. Please try again.")
