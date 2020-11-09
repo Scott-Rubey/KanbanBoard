@@ -14,7 +14,15 @@ $(document).ready(function() {
             data: formData,
         })
         .done(function(data) {
-            console.log(data)
+            var data = JSON.parse(data)
+            if(data.success) {
+                if(data.duplicate == true) {
+                    alert("You already have a project by that name.")
+                } else {
+                    window.location.href = data.redirect
+                }
+
+            }
         })
         .fail(function(data) {
             console.log(data)

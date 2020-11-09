@@ -7,7 +7,8 @@ $proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['useri
 $res = pg_fetch_result($proj, 'projectname');
 
 if($res != "") {
-    $_SESSION['currentproject'] = pg_query($conn, "SELECT projectid FROM project WHERE projectname = ". "'".$_POST['projectname']."'");
+    $q = pg_query($conn, "SELECT projectid FROM project WHERE projectname = ". "'".$_POST['projectname']."'");
+    $_SESSION['currentproject'] = pg_fetch_result($q, 'projectid');             //Set current project id to duplicate
     http_response_code(200); 
     echo json_encode(array("success"=>true, "duplicate"=>true, "redirect"=>"http://localhost:5432/kanban.html")); 
 } else {
@@ -25,7 +26,9 @@ if($res != "") {
         // die("Login unsuccessful"); 
     }
 
-    $_SESSION['currentproject'] = pg_query($conn, "SELECT projectid FROM project WHERE projectname = ". "'".$_POST['projectname']."'");
+    $q = pg_query($conn, "SELECT projectid FROM project WHERE projectname = ". "'".$_POST['projectname']."'");
+    $_SESSION['currentproject'] = pg_fetch_result($q, 'projectid'); 
+    
     http_response_code(200); 
     echo json_encode(array("success"=>true, "duplicate"=>false, "redirect"=>"http://localhost:5432/kanban.html")); 
 }

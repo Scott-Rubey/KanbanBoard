@@ -1,12 +1,9 @@
 <?php include('./config.php');
 
-$result = pg_query($conn, "SELECT * FROM person WHERE email = ". "'".$_POST['email']."'");
+$q = pg_query($conn, "SELECT userid FROM person WHERE email = ". "'".$_POST['email']."'");
+$result = pg_fetch_result($q, 'userid');
 
-if(pg_num_rows($result) == 1) {                       //User located in database via email 
-
-  $userid = pg_fetch_result($result, 'userid'); 
-
-} else {
+if($result == "") {                       //User not located in database via email 
 
   $params = array(                                    //Assoc array with table values for 'person' to add new user to database
       "userid"=>"",                              //UserID assigned based on how many rows are currently in person table
@@ -23,7 +20,9 @@ if(pg_num_rows($result) == 1) {                       //User located in database
   }
 }
 
-$userid = pg_query($conn, "SELECT userid FROM person WHERE email = ". "'".$_POST['email']."'");
+$q = pg_query($conn, "SELECT userid FROM person WHERE email = ". "'".$_POST['email']."'");
+$userid = pg_fetch_result($q, 'userid');
+
 http_response_code(200); 
 $_SESSION['userid'] = $userid;                        //Set superglobal session variable userid to track user across pages 
 echo "http://localhost:5432/projects.html"; 
