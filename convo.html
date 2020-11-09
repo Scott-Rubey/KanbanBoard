@@ -9,16 +9,19 @@
       type="text/css"
       href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="topnav.css" />
-</head>
+    <link rel="stylesheet" href="convo.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <title>Convo</title>
+  </head>
 
   <body>
-    <nav class="topnav">
-        <p class = "projectName">Project 1</p>
-        <a href="#signout">Sign out</a>
-        <a href="convo.html">Convo</a>
-        <a href="calendar.html">Calendar</a>
-        <a href="kanban.html">Board</a>
-    </nav>
+    <div id="nav-placeholder"></div>
+    <script>
+      $.get("topnav.html", function(data){
+        $("#nav-placeholder").replaceWith(data);
+      });
+    </script>
+    <h2>Convo</h2>
+
   </body>
 </html>
