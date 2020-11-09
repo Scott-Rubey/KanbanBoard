@@ -10,17 +10,21 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="kanban.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <title>Project Board</title>
   </head>
+
   <body>
-    <nav class="topnav">
-      <p class = "projectName">Project 1</p>
-      <a href="#signout">Sign out</a>
-      <a href="#convo">Convo</a>
-      <a href="#calendar">Calendar</a>
-      <a href="#board">Board</a>
-    </nav>
-    <nav class="main" id="main">
+    <div id="nav-placeholder">
+
+    </div>
+    <script>
+      $.get("topnav.html", function(data){
+        $("#nav-placeholder").replaceWith(data);
+      });
+    </script>
+
+  <div class="main" id="main">
     <!--Labels for each column-->
     <section class="flex-container1">
       <div class="flexlabel 1">Backlog</div>
