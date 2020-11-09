@@ -1,12 +1,16 @@
 const main = document.getElementById("main");
 const addTaskBtn = document.getElementById("addTask");
+var formCount = 0;
 
 //add an editable text-box when Add Task button is clicked
 addTaskBtn.addEventListener("click", function(e){
+  if(formCount === 0)
     main.appendChild(createForm());
 });
 
 function createForm(e){
+    formCount = 1;
+
     var newTaskForm = document.createElement("form");
     newTaskForm.setAttribute("id", "newTaskForm");
     newTaskForm.setAttribute("class", "popup");
