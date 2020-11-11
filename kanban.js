@@ -21,6 +21,7 @@ function createForm(e){
     //add form elements
     addTaskBox(newTaskForm);
     addPriorityBox(newTaskForm);
+    addDueDate(newTaskForm);
     addDescriptionBox(newTaskForm);
     addButtons(newTaskForm);
 
@@ -76,6 +77,17 @@ function addPriorityBox(newTaskForm){
     newTaskForm.innerHTML += "<br>";
 
     return newTaskForm;
+}
+
+//field for adding the due date of a task
+function addDueDate(newTaskForm){
+  var dueDateBox = document.createElement("input");
+  dueDateBox.setAttribute("type", "date");
+  dueDateBox.setAttribute("id", "dueDateBox");
+
+  newTaskForm.appendChild(dueDateBox);
+
+  return newTaskForm;
 }
 
 //textarea for adding a full description of the new task
