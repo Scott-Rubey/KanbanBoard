@@ -66,7 +66,7 @@
 
 form#newTaskForm {
   width: 30%;
-  height: 40vh;
+  height: 45vh;
   background-color: #aaa;
   margin: auto;
   border: 1px solid black;
@@ -76,7 +76,7 @@ form#newTaskForm {
   z-index: 1;
   position: absolute;
   top: 200px;
-  left: center;
+  left: 505px;
 }
 
 h2#newTaskFormHeader {
@@ -86,7 +86,8 @@ h2#newTaskFormHeader {
   cursor: move;
 }
 
-input#newTaskBox {
+input#newTaskBox,
+input#dueDateBox {
   width: 75%;
   height: 30px;
   font-size: small;
