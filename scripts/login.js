@@ -6,16 +6,18 @@ function onSignIn(googleUser) {
     
     $.ajax({
         type: 'POST', 
-        url: './includes/login.php', 
+        url: '../includes/login.php', 
         data: {
-            name: name,
+            alias: name,
             email: email, 
             imageurl: profileImage
         }, 
         success: function(data) {
-            window.location.href = data
+            console.log(data)
+            window.location.href = "http://localhost:5432/projects.html"            //Go to user's projects page
         },
-        error: () => {
+        error: function(data) {
+            console.log(data)
             alert("Error logging in. Please try again.")
             signOut()
         }

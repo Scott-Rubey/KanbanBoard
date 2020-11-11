@@ -28,11 +28,11 @@ if($res == "") {
     }
 
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>false, "redirect"=>"http://localhost:5432/kanban.html")); 
+    echo json_encode(array("success"=>true, "duplicate"=>false)); 
 
 } else {            //Duplicate task 
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>true, "redirect"=>"http://localhost:5432/kanban.html")); 
+    echo json_encode(array("success"=>true, "duplicate"=>true)); 
 }
 
 ?>

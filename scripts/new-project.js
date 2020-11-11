@@ -19,7 +19,7 @@ $(document).ready(function() {
                 if(data.duplicate == true) {
                     alert("You already have a project by that name.")
                 } else {
-                    window.location.href = data.redirect
+                    window.location.href = "http://localhost:5432/kanban.html"      //Go back to user's projects page
                 }
 
             }

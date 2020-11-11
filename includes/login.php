@@ -7,7 +7,7 @@ if($result == "") {                       //User not located in database via ema
 
   $params = array(                                    //Assoc array with table values for 'person' to add new user to database
       "userid"=>"",                              //UserID assigned based on how many rows are currently in person table
-      "name"=>$_POST['name'],
+      "alias"=>$_POST['alias'],
       "email"=>$_POST['email'],
       "imageurl"=>$_POST['imageurl']
   );  
@@ -18,13 +18,18 @@ if($result == "") {                       //User not located in database via ema
       http_response_code(404);                        //Send error code back to ajax to handle error
       die("Login unsuccessful"); 
   }
+
+  $q = pg_query($conn, "SELECT userid FROM person WHERE email = ". "'".$_POST['email']."'");
+  $userid = pg_fetch_result($q, 'userid');
+  $_SESSION['userid'] = $userid;                        //Set superglobal session variable userid to track user across pages 
+
+} else {
+
+  $_SESSION['userid'] = $result;        //User already exists 
+
 }
 
-$q = pg_query($conn, "SELECT userid FROM person WHERE email = ". "'".$_POST['email']."'");
-$userid = pg_fetch_result($q, 'userid');
-
 http_response_code(200); 
-$_SESSION['userid'] = $userid;                        //Set superglobal session variable userid to track user across pages 
-echo "http://localhost:5432/projects.html"; 
+echo json_encode(array('success'=>true)); 
 
 ?>

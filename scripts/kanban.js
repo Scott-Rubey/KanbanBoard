@@ -199,8 +199,7 @@ $('body').on('submit', 'form', function(e) {
           if(data.duplicate == true) {
               alert("You already have a task by that name.")
           } 
-              
-          window.location.href = data.redirect
+          window.location.reload()      //Reload project to update tasks 
           
       }
   })

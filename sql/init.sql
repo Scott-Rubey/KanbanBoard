@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS person (
     userid SERIAL NOT NULL PRIMARY KEY, 
-    name VARCHAR(100) NOT NULL, 
+    alias VARCHAR(100) NOT NULL, 
     email VARCHAR(40) NOT NULL,
     imageurl VARCHAR(255) NOT NULL
 );
@@ -23,7 +23,9 @@ CREATE TABLE IF NOT EXISTS task (
 FOREIGN KEY (projectid) REFERENCES project (projectid) ON DELETE CASCADE
 );
 
--- CREATE TABLE IF NOT EXISTS collaborators (
-
-
--- );
+CREATE TABLE IF NOT EXISTS collaborators (
+    projectid INT NOT NULL, 
+    userid INT NOT NULL,  
+FOREIGN KEY (projectid) REFERENCES project (projectid) ON DELETE CASCADE,
+FOREIGN KEY (userid) REFERENCES person (userid) ON DELETE CASCADE    
+);
