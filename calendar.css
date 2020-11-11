@@ -1,0 +1,55 @@
+h2 {
+  margin-top: 15px;
+}
+
+div {
+  padding: 40px;
+  margin-left: 185px;
+  display: flex;
+}
+
+iframe {
+  width: 1000px;
+  height: 650px;
+}
+
+/*iPad turned sideways*/
+@media only screen and (max-device-width: 1024px) {
+  div {
+    padding: 25px;
+    margin-left: 50px;
+  }
+
+  iframe {
+    width: 60ch;
+    height: 60vh;
+  }
+}
+
+/*iPad turned vertically*/
+@media only screen and (max-device-width: 768px) {
+  div {
+    padding: 25px;
+    margin-left: 55px;
+    margin-top: 135px;
+  }
+
+  iframe {
+    width: 40ch;
+    height: 30vh;
+  }
+}
+
+/*iPhone*/
+@media only screen and (max-device-width: 414px) {
+  div {
+    padding: 10px;
+    margin-left: 2px;
+    margin-top: 110px;
+  }
+
+  iframe {
+    width: 35ch;
+    height: 50vh;
+  }
+}
