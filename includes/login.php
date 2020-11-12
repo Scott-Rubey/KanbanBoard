@@ -8,7 +8,7 @@ if($result == "") {                       //User not located in database via ema
   $params = array(                                    //Assoc array with table values for 'person' to add new user to database
       "userid"=>"",                              //UserID assigned based on how many rows are currently in person table
       "alias"=>$_POST['alias'],
-      "email"=>$_POST['email'],
+      "email"=>strtolower($_POST['email']),
       "imageurl"=>$_POST['imageurl']
   );  
 

@@ -2,10 +2,15 @@ $(document).ready(function() {
 
     $('#projectform').submit(function(e) {
         e.preventDefault()
+
+        var collab = $('#collaborators').val()
+        collab = collab.split(";")
+        for(var i = 0; i < collab.length; i++)
+            collab[i] = collab[i].trim() 
     
         var formData= {
-            'projectname': $('#projectname').val()
-            //'collaborators': $('textarea[name=collaborators').val()
+            'projectname': $('#projectname').val(),
+            'collaborators': JSON.stringify(collab)
         }
     
         $.ajax({
@@ -21,7 +26,6 @@ $(document).ready(function() {
                 } else {
                     window.location.href = "http://localhost:8000/kanban.html"      //Go back to user's projects page
                 }
-
             }
         })
         .fail(function(data) {
