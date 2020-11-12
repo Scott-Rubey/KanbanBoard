@@ -4,9 +4,11 @@ $(document).ready(function() {
         e.preventDefault()
 
         var collab = $('#collaborators').val()
-        collab = collab.split(";")
-        for(var i = 0; i < collab.length; i++)
-            collab[i] = collab[i].trim() 
+        if(collab) {
+            collab = collab.split(";")
+            for(var i = 0; i < collab.length; i++)
+                collab[i] = collab[i].trim() 
+        }
     
         var formData= {
             'projectname': $('#projectname').val(),
@@ -20,6 +22,7 @@ $(document).ready(function() {
         })
         .done(function(data) {
             var data = JSON.parse(data)
+            console.log(data)
             if(data.success) {
                 if(data.duplicate == true) {
                     alert("You already have a project by that name.")

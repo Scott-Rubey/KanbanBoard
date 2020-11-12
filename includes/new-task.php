@@ -15,7 +15,7 @@ if($res == "") {
         "taskdescription"=>$taskdescription, 
         "taskpriority"=>$taskpriority,
         "taskstatus"=>$taskstatus,
-        "startdate"=>"2020-11-09", 
+        "startdate"=>date("Y-m-d"), 
         "enddate"=>"2020-11-09"
     );  
   
