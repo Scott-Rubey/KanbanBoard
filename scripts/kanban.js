@@ -1,9 +1,11 @@
 
   const main = document.getElementById("main");
   const addTaskBtn = document.getElementById("addTask");
+  var count = 0;
 
   //add an editable text-box when Add Task button is clicked
   addTaskBtn.addEventListener("click", function(e){
+    if(count === 0)
       main.appendChild(createForm());
   });
 
@@ -23,6 +25,8 @@
 
       //make form draggable
       drag(newTaskForm);
+
+      count = 1;
 
       return newTaskForm;
   }
@@ -107,7 +111,8 @@
       reset.setAttribute("type", "button");
       reset.setAttribute("id", "resetBtn");
       reset.setAttribute("value", "Cancel");
-      reset.setAttribute("class", "button form"); 
+      reset.setAttribute("class", "button form");
+      reset.setAttribute("onClick", "href='kanban.html'");
 
       //add to form
       newTaskForm.appendChild(reset);
