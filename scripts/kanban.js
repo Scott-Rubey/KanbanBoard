@@ -20,6 +20,7 @@
       //add form elements
       addTaskBox(newTaskForm);
       addPriorityBox(newTaskForm);
+      addDueDate(newTaskForm);
       addDescriptionBox(newTaskForm);
       addButtons(newTaskForm);
 
@@ -82,6 +83,19 @@
       return newTaskForm;
   }
 
+  //field for adding due date
+  function addDueDate(newTaskForm){
+    //create date box
+    var dueDateBox = document.createElement("input");
+    dueDateBox.setAttribute("id", "dueDateBox");
+    dueDateBox.setAttribute("type", "date");
+
+    //add to form
+    newTaskForm.appendChild(dueDateBox);
+
+    return newTaskForm;
+  }
+
   //textarea for adding a full description of the new task
   function addDescriptionBox(newTaskForm){
       //create textarea
@@ -112,7 +126,7 @@
       reset.setAttribute("id", "resetBtn");
       reset.setAttribute("value", "Cancel");
       reset.setAttribute("class", "button form");
-      reset.setAttribute("onClick", "href='kanban.html'");
+      reset.setAttribute("onClick", "window.location.href='kanban.html'");
 
       //add to form
       newTaskForm.appendChild(reset);
