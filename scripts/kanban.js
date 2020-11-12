@@ -112,7 +112,7 @@
       reset.setAttribute("id", "resetBtn");
       reset.setAttribute("value", "Cancel");
       reset.setAttribute("class", "button form");
-      reset.setAttribute("onClick", "href='kanban.html'");
+      reset.setAttribute("onClick", "window.location.href='kanban.html'");
 
       //add to form
       newTaskForm.appendChild(reset);
