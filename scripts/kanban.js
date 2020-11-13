@@ -1,9 +1,11 @@
 
   const main = document.getElementById("main");
   const addTaskBtn = document.getElementById("addTask");
+  var count = 0;
 
   //add an editable text-box when Add Task button is clicked
   addTaskBtn.addEventListener("click", function(e){
+    if(count === 0)
       main.appendChild(createForm());
   });
 
@@ -18,11 +20,14 @@
       //add form elements
       addTaskBox(newTaskForm);
       addPriorityBox(newTaskForm);
+      addDueDate(newTaskForm);
       addDescriptionBox(newTaskForm);
       addButtons(newTaskForm);
 
       //make form draggable
       drag(newTaskForm);
+
+      count = 1;
 
       return newTaskForm;
   }
@@ -78,6 +83,19 @@
       return newTaskForm;
   }
 
+  //field for adding due date
+  function addDueDate(newTaskForm){
+    //create date box
+    var dueDateBox = document.createElement("input");
+    dueDateBox.setAttribute("id", "dueDateBox");
+    dueDateBox.setAttribute("type", "date");
+
+    //add to form
+    newTaskForm.appendChild(dueDateBox);
+
+    return newTaskForm;
+  }
+
   //textarea for adding a full description of the new task
   function addDescriptionBox(newTaskForm){
       //create textarea
@@ -107,7 +125,8 @@
       reset.setAttribute("type", "button");
       reset.setAttribute("id", "resetBtn");
       reset.setAttribute("value", "Cancel");
-      reset.setAttribute("class", "button form"); 
+      reset.setAttribute("class", "button form");
+      reset.setAttribute("onClick", "window.location.href='kanban.html'");
 
       //add to form
       newTaskForm.appendChild(reset);
