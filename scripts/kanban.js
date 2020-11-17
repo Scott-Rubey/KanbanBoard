@@ -1,3 +1,51 @@
+  //Each time the kanban screen loads, populate all three columns with tasks from DB
+  window.onload = function(){
+    populateBacklog();
+    populateInProgress();
+    populateComplete();
+
+    backlog.appendChild(taskBox);
+ }
+
+  function populateBacklog(){
+    var backlog = document.getElementById("backlog-column");
+
+    for(var i = 1; i < 15; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+      
+      taskBox.appendChild(taskName);
+      taskBox.innerHTML += "<br>";
+      taskBox.appendChild(dueDate);
+      backlog.appendChild(taskBox);
+    }
+  }
+
+  function populateInProgress(){
+    var inProgress = document.getElementById("inProgress-column");
+
+    for(var i = 1; i < 8; ++i){
+      var taskBox = createTaskBox();
+      inProgress.appendChild(taskBox);
+    }
+  }
+
+  function populateComplete(){
+    var complete = document.getElementById("complete-column");
+
+    for(var i = 1; i < 3; ++i){
+      var taskBox = createTaskBox();
+      complete.appendChild(taskBox);
+    }
+  }
+
+  function createTaskBox(){
+    var taskBox = document.createElement("div");
+    taskBox.setAttribute("class", "taskBox");
+
+    return taskBox;
+  }
 
   const main = document.getElementById("main");
   const addTaskBtn = document.getElementById("addTask");
@@ -197,7 +245,7 @@
 
 $('body').on('submit', 'form', function(e) {
 
-  e.preventDefault()
+  //e.preventDefault()
   var priority = document.getElementById('priorityBtn')
 
   var formData= {
@@ -225,5 +273,4 @@ $('body').on('submit', 'form', function(e) {
   .fail(function(data) {
     console.log(data)
   })
-
 })
