@@ -10,9 +10,11 @@
     populateInProgress();
     populateComplete();
 
+    //make columns droppable
     activateColumns();
   }
 
+  //populate the backlog column with records from the database
   function populateBacklog(){
     var backlog = document.getElementById("backlog-column");
 
@@ -26,6 +28,7 @@
     }
   }
 
+  //populate the inProgress column with records from the database
   function populateInProgress(){
     var inProgress = document.getElementById("inProgress-column");
 
@@ -39,6 +42,7 @@
     }
   }
 
+  //populate the complete column with records from the database
   function populateComplete(){
     var complete = document.getElementById("complete-column");
 
@@ -55,16 +59,18 @@
   function createTaskBox(){
     var taskBox = document.createElement("div");
 
-    //allow ability to drag/drop task boxes
     taskBox.setAttribute("class", "taskBox");
     taskBox.setAttribute("id", "taskBox");
     taskBox.setAttribute("draggable", "true");
+
+    //allow ability to drag/drop task boxes
     taskBox.addEventListener('dragstart', handleDragStart, false);
     taskBox.addEventListener('dragover', handleDragOver, false);
 
     return taskBox;
   }
 
+  //format database records
   function textToTaskBox(taskBox, taskName, dueDate, column) {
     taskBox.appendChild(taskName);
     taskBox.innerHTML += "<br>";
@@ -76,10 +82,8 @@
     let columns = [backlogColumn, inProgressColumn, completeColumn];
 
     columns.forEach(function(column){
-      //column.addEventListener('dragstart', handleDragStart, false);
       column.addEventListener('dragover', handleDragOver, false);
       column.addEventListener('dragenter', handleDragEnter, false);
-      column.addEventListener('dragleave', handleDragLeave, false);
       column.addEventListener('dragend', handleDragEnd, false);
       column.addEventListener('drop', handleDrop, false);
     });
@@ -87,7 +91,7 @@
 
   var right = false;
 
-  //drag and drop code derived from https://web.dev/drag-and-drop/
+  //set up the data transfer object
   function handleDragStart(e){
     dragSrcEl = this;
     e.dataTransfer.effectAllowed = 'move';
@@ -101,6 +105,7 @@
     return false;
   }
 
+  //add colored borders to appropriate column when dragging task box
   function handleDragEnter(e){
     //if moving element from backlog to inprogress, add blue border
     if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
@@ -124,63 +129,59 @@
     }  
   }
 
+  //remove colored borders once drag event finished
   function handleDragEnd(e){
     //if task was moved from backlog to inprogress, remove blue border
-    if(inProgressColumn.contains(dragSrcEl))
+    if(inProgressColumn.contains(dragSrcEl) && right === true)
       inProgressColumn.classList.remove('goRight');
+
     //if task was moved from inprogress to complete, remove blue border
     else if(completeColumn.contains(dragSrcEl))
       completeColumn.classList.remove('goRight');
+
     //if task was moved from inprogress to backlog, remove red border
     else if(backlogColumn.contains(dragSrcEl))
       backlogColumn.classList.remove('goLeft');
+
     //if task was moved from complete to inprogress, remove red border
     else if(inProgressColumn.contains(dragSrcEl) && right === false)
-      inProgressColumn.classList.remove('goLeft');
-  }
+      inProgressColumn.classList.remove('goLeft');  
+  } 
 
-  function handleDragLeave(e){
-    //if task was moved from backlog to inprogress, remove blue border
-    if(inProgressColumn.contains(dragSrcEl))
-      inProgressColumn.classList.remove('goRight');
-    //if task was moved from inprogress to complete, remove blue border
-    else if(completeColumn.contains(dragSrcEl))
-      completeColumn.classList.remove('goRight');
-    //if task was moved from inprogress to backlog, remove red border
-    else if(backlogColumn.contains(dragSrcEl))
-      backlogColumn.classList.remove('goLeft');
-    //if task was moved from complete to inprogress, remove red border
-    else if(inProgressColumn.contains(dragSrcEl))
-      inProgressColumn.classList.remove('goLeft');
-  }
-
+  //drops the task box in the appropriate column
   function handleDrop(e){
     e.stopPropagation();
 
     //user may move backlog items to inprogress
     if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
       inProgressColumn.appendChild(dragSrcEl);
+
     //user may move inProgress items to Complete
     else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this))
       completeColumn.appendChild(dragSrcEl);
+
     //user may move items backwards from inProgress to Backlog
     else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
       backlogColumn.appendChild(dragSrcEl);
+
     //user may move items backwards from complete to inProgress
     else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
       inProgressColumn.appendChild(dragSrcEl);
-    //user may not move tasks by more than one column at a time
-    else{
-      alert("You may only move tasks by one column at a time");
-      inProgressColumn.classList.remove('goRight');
-    }
 
-    //this.innerText += "THIS";
-    //dragSrcEl.innerText += "HELLO";
+    //user may not move tasks by more than one column at a time
+    else if((completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
+            (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))){
+      alert("You may only move tasks by one column at a time");
+
+      //remove any colored borders after alert
+      inProgressColumn.classList.remove('goRight');
+      inProgressColumn.classList.remove('goLeft');
+    }
 
     return false;
   }
 
+  //ensures there's no more than one 'add task' form on the screen at once
   var count = 0;
 
   //add an editable text-box when Add Task button is clicked
@@ -189,6 +190,7 @@
       main.appendChild(createForm());
   });
 
+  //create new task form when 'add task' button pressed
   function createForm(e){
       var newTaskForm = document.createElement("form");
       newTaskForm.setAttribute("id", "newTaskForm");
