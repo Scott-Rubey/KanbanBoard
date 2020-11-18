@@ -10,7 +10,7 @@
     populateInProgress();
     populateComplete();
 
-    backlog.appendChild(taskBox);
+    activateColumns();
   }
 
   function populateBacklog(){
@@ -55,17 +55,12 @@
   function createTaskBox(){
     var taskBox = document.createElement("div");
 
-    var columns = backlogColumn, inProgressColumn, completeColumn;
-
     //allow ability to drag/drop task boxes
     taskBox.setAttribute("class", "taskBox");
+    taskBox.setAttribute("id", "taskBox");
     taskBox.setAttribute("draggable", "true");
     taskBox.addEventListener('dragstart', handleDragStart, false);
     taskBox.addEventListener('dragover', handleDragOver, false);
-    taskBox.addEventListener('dragenter', handleDragEnter, false);
-    taskBox.addEventListener('dragleave', handleDragLeave, false);
-    taskBox.addEventListener('dragend', handleDragEnd, false);
-    taskBox.addEventListener('drop', handleDrop, false);
 
     return taskBox;
   }
@@ -76,13 +71,25 @@
     taskBox.appendChild(dueDate);
   } 
 
+  //make columns droppable, i.e. able to accept draggable task boxes
+  function activateColumns(){
+    let columns = [backlogColumn, inProgressColumn, completeColumn];
+
+    columns.forEach(function(column){
+      //column.addEventListener('dragstart', handleDragStart, false);
+      column.addEventListener('dragover', handleDragOver, false);
+      column.addEventListener('dragenter', handleDragEnter, false);
+      column.addEventListener('dragleave', handleDragLeave, false);
+      column.addEventListener('dragend', handleDragEnd, false);
+      column.addEventListener('drop', handleDrop, false);
+    });
+  }
+
   var right = false;
 
   //drag and drop code derived from https://web.dev/drag-and-drop/
   function handleDragStart(e){
-    this.style.opacity = '0.2';
     dragSrcEl = this;
-
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', this.innerHTML);
   }
@@ -114,12 +121,10 @@
     else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
       inProgressColumn.classList.add('goLeft');
       right = false;
-    }
+    }  
   }
 
   function handleDragEnd(e){
-    this.style.opacity = '1';
-
     //if task was moved from backlog to inprogress, remove blue border
     if(inProgressColumn.contains(dragSrcEl))
       inProgressColumn.classList.remove('goRight');
@@ -131,7 +136,6 @@
       backlogColumn.classList.remove('goLeft');
     //if task was moved from complete to inprogress, remove red border
     else if(inProgressColumn.contains(dragSrcEl) && right === false)
-      dragSrcEl.innerText += "hello"
       inProgressColumn.classList.remove('goLeft');
   }
 
