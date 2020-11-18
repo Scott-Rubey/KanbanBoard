@@ -1,0 +1,26 @@
+{
+  "name": "fullstack-fall2020-kanban",
+  "version": "1.0.0",
+  "description": "Kanban board: a school project for Fullstack Fall 2020 at PSU",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddstevenson/fullstack-fall2020-kanban.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ddstevenson/fullstack-fall2020-kanban/issues"
+  },
+  "homepage": "https://github.com/ddstevenson/fullstack-fall2020-kanban#readme",
+  "dependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
