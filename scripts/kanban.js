@@ -408,3 +408,5 @@ $('body').on('submit', 'form', function(e) {
     console.log(data)
   })
 })
+
+module.exports = populateBacklog;
