@@ -1,6 +1,187 @@
-
+  const backlogColumn = document.querySelector('.flex-item.item1');
+  const inProgressColumn = document.querySelector('.flex-item.item2');
+  const completeColumn = document.querySelector('.flex-item.item3');
   const main = document.getElementById("main");
   const addTaskBtn = document.getElementById("addTask");
+  
+  //Each time the kanban screen loads, populate all three columns with tasks from DB
+  window.onload = function(){
+    populateBacklog();
+    populateInProgress();
+    populateComplete();
+
+    //make columns droppable
+    activateColumns();
+  }
+
+  //populate the backlog column with records from the database
+  function populateBacklog(){
+    var backlog = document.getElementById("backlog-column");
+
+    for(var i = 1; i < 15; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+      
+      textToTaskBox(taskBox, taskName, dueDate, backlog);
+      backlog.appendChild(taskBox);  
+    }
+  }
+
+  //populate the inProgress column with records from the database
+  function populateInProgress(){
+    var inProgress = document.getElementById("inProgress-column");
+
+    for(var i = 1; i < 8; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+
+      textToTaskBox(taskBox, taskName, dueDate, inProgress);
+      inProgress.appendChild(taskBox);
+    }
+  }
+
+  //populate the complete column with records from the database
+  function populateComplete(){
+    var complete = document.getElementById("complete-column");
+
+    for(var i = 1; i < 3; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+
+      textToTaskBox(taskBox, taskName, dueDate, complete);
+      complete.appendChild(taskBox);
+    }
+  }
+
+  function createTaskBox(){
+    var taskBox = document.createElement("div");
+
+    taskBox.setAttribute("class", "taskBox");
+    taskBox.setAttribute("id", "taskBox");
+    taskBox.setAttribute("draggable", "true");
+
+    //allow ability to drag/drop task boxes
+    taskBox.addEventListener('dragstart', handleDragStart, false);
+    taskBox.addEventListener('dragover', handleDragOver, false);
+
+    return taskBox;
+  }
+
+  //format database records
+  function textToTaskBox(taskBox, taskName, dueDate, column) {
+    taskBox.appendChild(taskName);
+    taskBox.innerHTML += "<br>";
+    taskBox.appendChild(dueDate);
+  } 
+
+  //make columns droppable, i.e. able to accept draggable task boxes
+  function activateColumns(){
+    let columns = [backlogColumn, inProgressColumn, completeColumn];
+
+    columns.forEach(function(column){
+      column.addEventListener('dragover', handleDragOver, false);
+      column.addEventListener('dragenter', handleDragEnter, false);
+      column.addEventListener('dragend', handleDragEnd, false);
+      column.addEventListener('drop', handleDrop, false);
+    });
+  }
+
+  var right = false;
+
+  //set up the data transfer object
+  function handleDragStart(e){
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+  }
+
+  function handleDragOver(e){
+    if(e.preventDefault)
+      e.preventDefault();
+
+    return false;
+  }
+
+  //add colored borders to appropriate column when dragging task box
+  function handleDragEnter(e){
+    //if moving element from backlog to inprogress, add blue border
+    if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
+      inProgressColumn.classList.add('goRight');
+      right = true;
+    }
+    //if moving element from inprogress to complete, add blue border
+    else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)){
+      completeColumn.classList.add('goRight');
+      right = true;
+    }
+    //if moving element from inprogress to backlog, add red border
+    else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)){
+      backlogColumn.classList.add('goLeft');
+      right = false;
+    }
+    //if moving element from complete to inProgress, add red border
+    else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
+      inProgressColumn.classList.add('goLeft');
+      right = false;
+    }  
+  }
+
+  //remove colored borders once drag event finished
+  function handleDragEnd(e){
+    //if task was moved from backlog to inprogress, remove blue border
+    if(inProgressColumn.contains(dragSrcEl) && right === true)
+      inProgressColumn.classList.remove('goRight');
+
+    //if task was moved from inprogress to complete, remove blue border
+    else if(completeColumn.contains(dragSrcEl))
+      completeColumn.classList.remove('goRight');
+
+    //if task was moved from inprogress to backlog, remove red border
+    else if(backlogColumn.contains(dragSrcEl))
+      backlogColumn.classList.remove('goLeft');
+
+    //if task was moved from complete to inprogress, remove red border
+    else if(inProgressColumn.contains(dragSrcEl) && right === false)
+      inProgressColumn.classList.remove('goLeft');  
+  } 
+
+  //drops the task box in the appropriate column
+  function handleDrop(e){
+    e.stopPropagation();
+
+    //user may move backlog items to inprogress
+    if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+      inProgressColumn.appendChild(dragSrcEl);
+
+    //user may move inProgress items to Complete
+    else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this))
+      completeColumn.appendChild(dragSrcEl);
+
+    //user may move items backwards from inProgress to Backlog
+    else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
+      backlogColumn.appendChild(dragSrcEl);
+
+    //user may move items backwards from complete to inProgress
+    else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+      inProgressColumn.appendChild(dragSrcEl);
+
+    //user may not move tasks by more than one column at a time
+    else if((completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
+            (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))){
+      alert("You may only move tasks by one column at a time");
+
+      //remove any colored borders after alert
+      inProgressColumn.classList.remove('goRight');
+      inProgressColumn.classList.remove('goLeft');
+    }
+
+    return false;
+  }
+
+  //ensures there's no more than one 'add task' form on the screen at once
   var count = 0;
 
   //add an editable text-box when Add Task button is clicked
@@ -9,6 +190,7 @@
       main.appendChild(createForm());
   });
 
+  //create new task form when 'add task' button pressed
   function createForm(e){
       var newTaskForm = document.createElement("form");
       newTaskForm.setAttribute("id", "newTaskForm");
@@ -197,7 +379,7 @@
 
 $('body').on('submit', 'form', function(e) {
 
-  e.preventDefault()
+  //e.preventDefault()
   var priority = document.getElementById('priorityBtn')
 
   var formData= {
@@ -225,5 +407,4 @@ $('body').on('submit', 'form', function(e) {
   .fail(function(data) {
     console.log(data)
   })
-
 })
