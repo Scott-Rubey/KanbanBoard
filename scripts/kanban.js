@@ -11,7 +11,7 @@
     populateComplete();
 
     //make columns droppable
-    activateColumns();
+    activateColumns([backlogColumn, inProgressColumn, completeColumn]);
   }
 
   //populate the backlog column with records from the database
@@ -78,9 +78,7 @@
   } 
 
   //make columns droppable, i.e. able to accept draggable task boxes
-  function activateColumns(){
-    let columns = [backlogColumn, inProgressColumn, completeColumn];
-
+  function activateColumns(columns){
     columns.forEach(function(column){
       column.addEventListener('dragover', handleDragOver, false);
       column.addEventListener('dragenter', handleDragEnter, false);
@@ -411,3 +409,19 @@ $('body').on('submit', 'form', function(e) {
 
 module.exports.populateBacklog = populateBacklog;
 module.exports.populateInProgress = populateInProgress;
+module.exports.populateComplete = populateComplete;
+module.exports.createTaskBox = createTaskBox;
+module.exports.textToTaskBox = textToTaskBox;
+module.exports.activateColumns = activateColumns;
+module.exports.handleDragStart = handleDragStart;
+module.exports.handleDragOver = handleDragOver;
+module.exports.handleDragEnter = handleDragEnter;
+module.exports.handleDragEnd = handleDragEnd;
+module.exports.handleDrop = handleDrop;
+module.exports.createForm = createForm;
+module.exports.addTaskBox = addTaskBox;
+module.exports.addPriorityBox = addPriorityBox;
+module.exports.addDueDate = addDueDate;
+module.exports.addDescriptionBox = addDescriptionBox;
+module.exports.addButtons = addButtons;
+module.exports.drag = drag;
