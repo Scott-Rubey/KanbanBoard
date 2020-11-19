@@ -205,7 +205,7 @@ test('verify populateInProgress() no exceptions', () => {
 <span id="main"/>
 <span id="inProgress-column"/>
 </div>`;
-    expect(() => createForm()).not.toThrow();
+    expect(() => kanban.createForm()).not.toThrow();
   });
   
   test('verify addTaskBox() no exceptions', () => {
@@ -215,61 +215,76 @@ test('verify populateInProgress() no exceptions', () => {
 <button id="addTask">
 <span id="main"/>
 <span id="inProgress-column"/>
+<span id="taskbox"/>
 </div>`;
-    expect(() => addTaskBox()).not.toThrow();
+    var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addTaskBox(mockBox)).not.toThrow();
   });
   
   test('verify addPriorityBox() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => addPriorityBox()).not.toThrow();
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addPriorityBox(mockBox)).not.toThrow();
   });
   
   test('verify addDueDate() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => addDueDate()).not.toThrow();
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addDueDate(mockBox)).not.toThrow();
   });
   
   test('verify addDescriptionBox() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => addDescriptionBox()).not.toThrow();
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addDescriptionBox(mockBox)).not.toThrow();
   });
   
   test('verify addButtons() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => addButtons()).not.toThrow();
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addButtons(mockBox)).not.toThrow();
   });
   
   test('verify drag() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => drag()).not.toThrow();
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <input id="input"/>
+    <form id="mockform" />
+    <span class="dropdown-item" />
+    <span id="priorityBtn" />
+    </div>`;
+    var mockBox = document.querySelector('#mockform');
+    expect(() => kanban.drag(mockBox)).not.toThrow();
   }); 
