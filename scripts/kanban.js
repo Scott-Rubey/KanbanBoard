@@ -409,4 +409,4 @@ $('body').on('submit', 'form', function(e) {
   })
 })
 
-module.exports = populateBacklog;
+module.exports.populateBacklog = populateBacklog;
