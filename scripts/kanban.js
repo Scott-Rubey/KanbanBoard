@@ -410,3 +410,4 @@ $('body').on('submit', 'form', function(e) {
 })
 
 module.exports.populateBacklog = populateBacklog;
+module.exports.populateInProgress = populateInProgress;
