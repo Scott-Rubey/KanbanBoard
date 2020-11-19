@@ -17,6 +17,12 @@ document.body.innerHTML =
 global.window = window;
 global.$ = require('jquery');
 const kanban = require('./kanban');
+const backlogColumn = document.querySelector('.item1');
+const inProgressColumn = document.querySelector('.item2');
+const completeColumn = document.querySelector('.item3');
+const main = document.getElementById("main");
+const addTaskBtn = document.getElementById("addTask");
+
 
 // Start tests here
 
@@ -89,9 +95,7 @@ test('verify populateInProgress() no exceptions', () => {
 <span class="item3" />
 </span>
 </div>`;
-  backlogColumn = document.querySelector('.item1');
-  inProgressColumn = document.querySelector('.item2');
-  completeColumn = document.querySelector('.item3');
+
     expect(() => kanban.activateColumns([backlogColumn,inProgressColumn,completeColumn])).not.toThrow();
   });
 
@@ -144,16 +148,17 @@ test('verify populateInProgress() no exceptions', () => {
     <span id="backlog-column"/>
     <button id="addTask"/>
     <span id="main"/>
+    <div class="flex-item">
+<div class="item1" />
+<div class="item2" />
+<div class="item3" />
+<div id="node" />
+</div>
     </div>`;
     class MockEvent {
-      preventDefault;
-      constructor(){
-        this.preventDefault = false;
-      }
-      preventDefault(){
-        return;
-      }
+      // nothing
     }
+    dragSrcEl = document.querySelector('#node');
     expect(() => kanban.handleDragEnter(new MockEvent())).not.toThrow();
   });
 
@@ -165,6 +170,7 @@ test('verify populateInProgress() no exceptions', () => {
 <span id="main"/>
 <span id="inProgress-column"/>
 </div>`;
+dragSrcEl = document.querySelector('#node');
     expect(() => kanban.handleDragEnd()).not.toThrow();
   });
   

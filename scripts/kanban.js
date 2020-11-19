@@ -1,6 +1,6 @@
-  const backlogColumn = document.querySelector('.flex-item.item1');
-  const inProgressColumn = document.querySelector('.flex-item.item2');
-  const completeColumn = document.querySelector('.flex-item.item3');
+  const backlogColumn = document.querySelector('.item1');
+  const inProgressColumn = document.querySelector('.item2');
+  const completeColumn = document.querySelector('.item3');
   const main = document.getElementById("main");
   const addTaskBtn = document.getElementById("addTask");
   
