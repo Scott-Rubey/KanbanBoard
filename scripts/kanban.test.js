@@ -164,25 +164,37 @@ test('verify populateInProgress() no exceptions', () => {
 
   test('verify handleDragEnd() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-dragSrcEl = document.querySelector('#node');
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask"/>
+    <span id="main"/>
+    <div class="flex-item">
+<div class="item1" />
+<div class="item2" />
+<div class="item3" />
+<div id="node" />
+</div>
+    </div>`;
+    dragSrcEl = document.querySelector('#node');
     expect(() => kanban.handleDragEnd()).not.toThrow();
   });
   
   test('verify handleDrop() no exceptions', () => {
     document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-<span id="inProgress-column"/>
-</div>`;
-    expect(() => handleDrop()).not.toThrow();
+  `<div>
+  <span id="backlog-column"/>
+  <button id="addTask">
+  <span id="main"/>
+  <span id="inProgress-column"/>
+  </div>`;
+
+  class MockEvent {
+
+    stopPropagation(){
+      //nothing
+    }
+  }
+    expect(() => kanban.handleDrop(new MockEvent())).not.toThrow();
   });
   
   test('verify createForm() no exceptions', () => {
