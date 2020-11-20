@@ -1,1 +1,9 @@
 cloud_sql_proxy
+node_modules
+build
+npm-debug.log
+.env
+.DS_Store
+scripts/sum.js
+scripts/sum.test.js
+.vscode
