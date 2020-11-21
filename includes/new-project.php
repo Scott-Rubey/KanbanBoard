@@ -17,7 +17,8 @@ if($res != "") {        //Project already exists by the supplied name
     $params = array(                                    //Assoc array with table values for 'person' to add new user to database
         "projectid"=>"",
         "userid"=>$_SESSION['userid'], 
-        "projectname"=>$projname
+        "projectname"=>$projname,
+        "modified"=>date("Y-m-d") 
     );  
   
     $insert = pg_insert($conn, 'project', $params);      //Insert user into database 
@@ -29,9 +30,10 @@ if($res != "") {        //Project already exists by the supplied name
 
     $q = pg_query($conn, "SELECT projectid FROM project WHERE userid = ".$_SESSION['userid']." AND projectname = ". "'".$_POST['projectname']."'");
     $projid = pg_fetch_result($q, 'projectid'); 
-    $_SESSION['currentproject'] = $projid; 
+    $_SESSION['currentproject'] = $projid;          //Set current projectid 
 
-    if(!empty($collab)) {                                                                                           //Check if collaborators were provided
+    //Check if collaborators were provided
+    if(!empty($collab)) {                                                                              
         
         foreach($collab as $c) {                                                                                    //Loop to add collaborators
             $newCollaborator = pg_query($conn, "SELECT * FROM person WHERE email = "."'".$c."'");                    //Check if collaborator is in person table
@@ -61,7 +63,7 @@ if($res != "") {        //Project already exists by the supplied name
     }
     
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>false)); 
+    echo json_encode(array("success"=>true, "duplicate"=>false, 'projectid'=>$projid)); 
 
 }
 ?>

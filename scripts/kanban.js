@@ -6,54 +6,10 @@
   
   //Each time the kanban screen loads, populate all three columns with tasks from DB
   window.onload = function(){
-    populateBacklog();
-    populateInProgress();
-    populateComplete();
+    populateTasks()
 
     //make columns droppable
     activateColumns([backlogColumn, inProgressColumn, completeColumn]);
-  }
-
-  //populate the backlog column with records from the database
-  function populateBacklog(){
-    var backlog = document.getElementById("backlog-column");
-
-    for(var i = 1; i < 15; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-      
-      textToTaskBox(taskBox, taskName, dueDate, backlog);
-      backlog.appendChild(taskBox);  
-    }
-  }
-
-  //populate the inProgress column with records from the database
-  function populateInProgress(){
-    var inProgress = document.getElementById("inProgress-column");
-
-    for(var i = 1; i < 8; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-
-      textToTaskBox(taskBox, taskName, dueDate, inProgress);
-      inProgress.appendChild(taskBox);
-    }
-  }
-
-  //populate the complete column with records from the database
-  function populateComplete(){
-    var complete = document.getElementById("complete-column");
-
-    for(var i = 1; i < 3; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-
-      textToTaskBox(taskBox, taskName, dueDate, complete);
-      complete.appendChild(taskBox);
-    }
   }
 
   function createTaskBox(){
@@ -373,7 +329,55 @@
     }
   }
 
+function populateTasks() {
 
+    var urlString = window.location.search
+    var id = urlString.slice(1, urlString.length).split('=')
+    
+
+    $.ajax({
+        type: 'GET', 
+        data: {'id': id[1]},
+        url: '../includes/kanban.php', 
+    })
+    .done(function(data) {
+
+        if(data != 'false') {
+            var parsed = JSON.parse(data)
+            var result = parsed.tasks
+            var projectName = parsed.projectname
+
+            document.getElementById('projectName').innerHTML = projectName
+
+            var backlog = document.getElementById("backlog-column");
+            var inProgress = document.getElementById("inProgress-column");
+            var complete = document.getElementById("complete-column");
+
+            for(var i = 0; i < result.length; i++){
+              var taskBox = createTaskBox();
+              var taskName = document.createTextNode("Task name: " + result[i].taskname);
+              var dueDate = document.createTextNode("Due date: " + result[i].enddate);
+              var description = document.createTextNode("Description: " + result[i].description);
+              
+              if(result[i].taskstatus == 'backlog') {
+                textToTaskBox(taskBox, taskName, dueDate, backlog, description);
+                backlog.appendChild(taskBox)  
+              }
+              else if (result[i].taskstatus == 'inProgress') {
+                textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
+                inProgress.appendChild(taskBox)  
+              }
+              else {
+                textToTaskBox(taskBox, taskName, dueDate, complete, description);
+              }
+            }
+            //console.log(data)
+        }
+    })
+    .fail(function(data) {
+        console.log('Projects could not be retrieved')
+    })
+}
 
 $('body').on('submit', 'form', function(e) {
 
@@ -384,7 +388,8 @@ $('body').on('submit', 'form', function(e) {
     'taskname': $('#newTaskBox').val(),
     'taskdescription': $('#description').val(),
     'taskpriority': priority.options[priority.selectedIndex].text, 
-    'taskstatus': 'backlog'        //Setting as default status for now, will change if user is allowed to choose status
+    'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
+    'enddate': $('#dueDateBox').val()
   }
 
   $.ajax({

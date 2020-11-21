@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS project (
     projectid SERIAL NOT NULL PRIMARY KEY, 
     userid INT NOT NULL, 
     projectname VARCHAR(30) NOT NULL, 
+    modified DATE NOT NULL, 
 FOREIGN KEY (userid) REFERENCES person (userid) ON DELETE CASCADE 
 );
 
