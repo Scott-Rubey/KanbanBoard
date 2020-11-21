@@ -7,9 +7,14 @@ $(document).ready(function() {
     .done(function(data) {
 
         if(data) {
+
             var result = JSON.parse(data)
 
-            console.log(data)
+            console.log(1)
+
+            if(result.length > 0) {
+                //document.getElementById('projects-CTA').style.display = 'none'
+            }
 
             for(var i = 0; i < result.length; i++) {
 
@@ -50,6 +55,10 @@ $(document).ready(function() {
                 tr.appendChild(td3)
                 tbody.appendChild(tr)
             }
+        } else {
+            document.getElementById('list-header').style.display = 'none'
+            document.getElementById('list-items').style.display = 'none'
+            
         }
 
     })
