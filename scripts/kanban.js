@@ -67,6 +67,9 @@
     taskBox.addEventListener('dragstart', handleDragStart, false);
     taskBox.addEventListener('dragover', handleDragOver, false);
 
+    //allow user to double click on the taskbox to expand it
+    taskBox.addEventListener('dblclick', expandTask, false)
+
     return taskBox;
   }
 
@@ -177,6 +180,19 @@
     }
 
     return false;
+  }
+
+  //create larger taskbox on double click so user can view all fields
+  function expandTask(e){
+      var taskBox = this;
+      
+      var expandedTask = document.createElement('div');
+      expandedTask.setAttribute('class', 'expandedTask');
+      expandedTask.innerText += 'Test Expanded Task';
+
+      drag(expandedTask);
+
+      main.appendChild(expandedTask);
   }
 
   //ensures there's no more than one 'add task' form on the screen at once
