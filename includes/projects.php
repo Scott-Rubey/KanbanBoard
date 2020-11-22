@@ -9,6 +9,9 @@ $res2 = pg_fetch_all($q1);
 $q3 = pg_query($conn, "SELECT alias FROM person WHERE userid=".$_SESSION['userid']);                        //Get current user's name
 $curUserName = pg_fetch_result($q3, 0, 'alias');
 
+if(!$curUserName) 
+    $curUserName = "";
+
 if($res) {
     for($i = 0; $i < count($res); $i++) {
         $q2 = pg_query('SELECT projectid, projectname, modified FROM project WHERE projectid ='.$res[$i]['projectid']);
@@ -34,10 +37,12 @@ if($res2) {
                 if(strcmp($curUserName, $collabName) == 0) {
                     continue; 
                 } else {
-                    if($collabs == "") {
-                        $collabs .= $collabName;
-                    } else {
-                        $collabs .= ", " . $collabName; 
+                    if($collabName) {
+                        if($collabs == "") {
+                            $collabs .= $collabName;
+                        } else {
+                            $collabs .= ", " . $collabName; 
+                        }
                     }
                 }
             }
@@ -46,8 +51,10 @@ if($res2) {
     }
 }
 
-if($res2)
+if($res2) {
+    http_response_code(200); 
     echo json_encode($res2);
+}
 
 
 

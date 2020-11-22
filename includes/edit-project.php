@@ -16,6 +16,10 @@ if(strcmp($projname, $oldName) == 0) {                                          
 
     pg_query($conn, "UPDATE project SET projectname = "."'".$projname."'"." WHERE projectid = ". $projid);
 
+    // $d = date('Y-m-d');
+    // pg_query($conn, "UPDATE project SET modified = ".date("Y-m-d")." WHERE projectid = ". $projid);
+
+
     if(!empty($collab)) {                                                                              
         
         foreach($collab as $c) {                                                                                    //Loop to add collaborators

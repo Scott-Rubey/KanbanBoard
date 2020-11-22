@@ -24,7 +24,7 @@ if($res != "") {        //Project already exists by the supplied name
     $insert = pg_insert($conn, 'project', $params);      //Insert user into database 
   
     if(!$insert) {                                      //Insert error
-        http_response_code(404);                        //Signal http error
+        http_response_code(400);                        //Signal http error
         die("Login unsuccessful"); 
     }
 

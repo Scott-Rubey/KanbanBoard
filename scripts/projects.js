@@ -26,9 +26,15 @@ $(document).ready(function() {
                 th.setAttribute('scope', 'row')
                 var a = document.createElement('a')
                 var label = document.createElement('label')
-                label.innerHTML = result[i].projectname
+                if(result[i].projectname) 
+                    label.innerHTML = result[i].projectname
+                else 
+                    label.innerHTML = "N/A"
                 a.appendChild(label)
-                a.href = 'http://localhost:8000/kanban.html?id=' + result[i].projectid
+                if(result[i].projectid)
+                    a.href = 'http://localhost:8000/kanban.html?id=' + result[i].projectid
+                else
+                a.href = 'http://localhost:8000/kanban.html'
                 th.appendChild(a)
 
                 var td1 = document.createElement('td')
@@ -38,8 +44,12 @@ $(document).ready(function() {
                     td1.innerHTML = "None"
 
                 var td2 = document.createElement('td')
-                var date = result[i].modified.split("-")                        //Split to reformat date from psql                  
-                td2.innerHTML = date[1] + '/' + date[2] + '/' + date[0]         //Add data modified 
+                if(result[i].modified) {
+                    var date = result[i].modified.split("-")                        //Split to reformat date from psql                  
+                    td2.innerHTML = date[1] + '/' + date[2] + '/' + date[0]         //Add data modified 
+                } else {
+                    td2.innerHTML = "N/A"         //Add data modified 
+                }
                 var td3 = document.createElement('td')
 
                 btn = document.createElement('button')
@@ -47,7 +57,8 @@ $(document).ready(function() {
                 btn.classList.add('btn-light')
                 btn.setAttribute('data-toggle', 'modal')
                 btn.setAttribute('data-target', '#exampleModal')
-                btn.setAttribute('id', result[i].projectid)
+                if(result[i].projectid)
+                    btn.setAttribute('id', result[i].projectid)
 
                 td3.appendChild(btn)
 
@@ -85,7 +96,7 @@ $(document).ready(function() {
                         data: formData,
                     })
                     .done(function(data) {
-                        //console.log(data)
+                        console.log(data)
                         var data = JSON.parse(data)
                         if(data.success) {
                             if(data.duplicate == true) {

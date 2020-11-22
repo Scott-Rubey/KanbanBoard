@@ -383,13 +383,16 @@ $('body').on('submit', 'form', function(e) {
 
   //e.preventDefault()
   var priority = document.getElementById('priorityBtn')
+  var taskName = $('#newTaskBox').val()
+  var taskDescription = $('#description').val()
+  var endDate = $('#dueDateBox').val()
 
   var formData= {
-    'taskname': $('#newTaskBox').val(),
-    'taskdescription': $('#description').val(),
+    'taskname': taskName,
+    'taskdescription': taskDescription,
     'taskpriority': priority.options[priority.selectedIndex].text, 
     'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
-    'enddate': $('#dueDateBox').val()
+    'enddate': endDate
   }
 
   $.ajax({
@@ -404,7 +407,6 @@ $('body').on('submit', 'form', function(e) {
               alert("You already have a task by that name.")
           } 
           window.location.reload()      //Reload project to update tasks 
-          
       }
   })
   .fail(function(data) {
