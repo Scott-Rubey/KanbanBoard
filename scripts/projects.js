@@ -10,7 +10,7 @@ $(document).ready(function() {
 
             var result = JSON.parse(data)
 
-            console.log(1)
+            //console.log(data)
 
             if(result.length > 0) {
                 document.getElementById('projects-CTA').style.display = 'none'
@@ -59,7 +59,7 @@ $(document).ready(function() {
                 
             }
 
-            $('#list-items').on('click', 'button', function(e) {
+            $('#list-items').on('click', 'button', function(e) {                //Listener for 'settings' modal 
 
                 var projectId = this.id
                 
