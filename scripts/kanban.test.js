@@ -288,3 +288,229 @@ test('verify populateInProgress() no exceptions', () => {
     var mockBox = document.querySelector('#mockform');
     expect(() => kanban.drag(mockBox)).not.toThrow();
   }); 
+
+
+  test('verify createTaskBox() has correct document structure', () => {
+    document.body.innerHTML =
+`<div>
+<span id="backlog-column"/>
+<button id="addTask">
+<span id="main"/>
+</div>`;
+    expect(() => kanban.createTaskBox()).not.toThrow();
+    expect($("#taskBox")).toBeDefined();
+  });
+
+  test('verify textToTaskBox() has correct document structure', () => {
+    document.body.innerHTML =
+`<div>
+<span id="backlog-column"/>
+<button id="addTask">
+<span id="main"/>
+<span id="complete-column"/>
+</div>`;
+    var complete = document.getElementById("complete-column");
+    var taskBox = kanban.createTaskBox();
+    var taskName = document.createTextNode("Task name: Test task 1");
+    var dueDate = document.createTextNode("Due date: placeholder");
+    expect(() => kanban.textToTaskBox(taskBox, taskName, dueDate, complete)).not.toThrow();
+    expect($("#taskName")).toBeDefined();
+  });
+
+  test('verify handleDragStart() has correct document structure', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask"/>
+    <span id="main"/>
+    </div>`;
+    class dt{
+      setData(x) {
+        return;
+      }
+    }
+    class MockEvent {
+      dataTransfer;
+      constructor(){
+        this.dataTransfer = new dt();
+      }
+    }
+    e= new MockEvent();
+
+    expect(() => kanban.handleDragStart(e)).not.toThrow();
+    expect(e.dataTransfer.effectAllowed).toBe('move');
+  });
+
+  test('verify handleDragOver() returns correct value', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask"/>
+    <span id="main"/>
+    </div>`;
+    class MockEvent {
+      preventDefault;
+      constructor(){
+        this.preventDefault = false;
+      }
+      preventDefault(){
+        return;
+      }
+    }
+    testval = kanban.handleDragOver(new MockEvent());
+    expect(testval).toBe(false);
+  });
+
+ 
+  test('verify handleDragEnter() has correct return value', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask"/>
+    <span id="main"/>
+    <div class="flex-item">
+<div class="item1" />
+<div class="item2" />
+<div class="item3" />
+<div id="node" />
+</div>
+    </div>`;
+    class MockEvent {
+      // nothing
+    }
+    dragSrcEl = document.querySelector('#node');
+    testval = kanban.handleDragEnter(new MockEvent())
+    expect(testval).toBe(false);
+  });
+
+  test('verify handleDragEnd() has correct return value', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask"/>
+    <span id="main"/>
+    <div class="flex-item">
+<div class="item1" />
+<div class="item2" />
+<div class="item3" />
+<div id="node" />
+</div>
+    </div>`;
+    class MockEvent {
+      // nothing
+    }
+    dragSrcEl = document.querySelector('#node');
+    testval = kanban.handleDragEnd(new MockEvent());
+    expect(testval).toBe(false);
+  });
+  
+  test('verify handleDrop() has correct return value', () => {
+    document.body.innerHTML =
+  `<div>
+  <span id="backlog-column"/>
+  <button id="addTask">
+  <span id="main"/>
+  <span id="inProgress-column"/>
+  </div>`;
+
+  class MockEvent {
+
+    stopPropagation(){
+      //nothing
+    }
+  }
+    expect(() => kanban.handleDrop(new MockEvent())).not.toThrow();
+  });
+  
+  test('verify createForm() no exceptions', () => {
+    document.body.innerHTML =
+`<div>
+<span id="backlog-column"/>
+<button id="addTask">
+<span id="main"/>
+<span id="inProgress-column"/>
+</div>`;
+    expect(() => kanban.createForm()).not.toThrow();
+  });
+  
+  test('verify addTaskBox() no exceptions', () => {
+    document.body.innerHTML =
+`<div>
+<span id="backlog-column"/>
+<button id="addTask">
+<span id="main"/>
+<span id="inProgress-column"/>
+<span id="taskbox"/>
+</div>`;
+    var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addTaskBox(mockBox)).not.toThrow();
+  });
+  
+  test('verify addPriorityBox() no exceptions', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addPriorityBox(mockBox)).not.toThrow();
+  });
+  
+  test('verify addDueDate() no exceptions', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addDueDate(mockBox)).not.toThrow();
+  });
+  
+  test('verify addDescriptionBox() no exceptions', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addDescriptionBox(mockBox)).not.toThrow();
+  });
+  
+  test('verify addButtons() no exceptions', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <span id="taskbox"/>
+    </div>`;
+        var mockBox = document.querySelector('#taskbox');
+    expect(() => kanban.addButtons(mockBox)).not.toThrow();
+  });
+  
+  test('verify drag() no exceptions', () => {
+    document.body.innerHTML =
+    `<div>
+    <span id="backlog-column"/>
+    <button id="addTask">
+    <span id="main"/>
+    <span id="inProgress-column"/>
+    <input id="input"/>
+    <form id="mockform" />
+    <span class="dropdown-item" />
+    <span id="priorityBtn" />
+    </div>`;
+    var mockBox = document.querySelector('#mockform');
+    expect(() => kanban.drag(mockBox)).not.toThrow();
+  }); 
+
