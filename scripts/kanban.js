@@ -12,6 +12,18 @@
     activateColumns([backlogColumn, inProgressColumn, completeColumn]);
   }
 
+  function populateBacklog(){
+
+  }
+
+  function populateInProgress(){
+
+  }
+
+function populateComplete(){
+
+}
+
   function createTaskBox(){
     var taskBox = document.createElement("div");
 
@@ -430,21 +442,23 @@ $('body').on('submit', 'form', function(e) {
   })
 })
 
-module.exports.populateBacklog = populateBacklog;
-module.exports.populateInProgress = populateInProgress;
-module.exports.populateComplete = populateComplete;
-module.exports.createTaskBox = createTaskBox;
-module.exports.textToTaskBox = textToTaskBox;
-module.exports.activateColumns = activateColumns;
-module.exports.handleDragStart = handleDragStart;
-module.exports.handleDragOver = handleDragOver;
-module.exports.handleDragEnter = handleDragEnter;
-module.exports.handleDragEnd = handleDragEnd;
-module.exports.handleDrop = handleDrop;
-module.exports.createForm = createForm;
-module.exports.addTaskBox = addTaskBox;
-module.exports.addPriorityBox = addPriorityBox;
-module.exports.addDueDate = addDueDate;
-module.exports.addDescriptionBox = addDescriptionBox;
-module.exports.addButtons = addButtons;
-module.exports.drag = drag;
+if(typeof module != 'undefined'){
+  module.exports.populateBacklog = populateBacklog;
+  module.exports.populateInProgress = populateInProgress;
+  module.exports.populateComplete = populateComplete;
+  module.exports.createTaskBox = createTaskBox;
+  module.exports.textToTaskBox = textToTaskBox;
+  module.exports.activateColumns = activateColumns;
+  module.exports.handleDragStart = handleDragStart;
+  module.exports.handleDragOver = handleDragOver;
+  module.exports.handleDragEnter = handleDragEnter;
+  module.exports.handleDragEnd = handleDragEnd;
+  module.exports.handleDrop = handleDrop;
+  module.exports.createForm = createForm;
+  module.exports.addTaskBox = addTaskBox;
+  module.exports.addPriorityBox = addPriorityBox;
+  module.exports.addDueDate = addDueDate;
+  module.exports.addDescriptionBox = addDescriptionBox;
+  module.exports.addButtons = addButtons;
+  module.exports.drag = drag;
+}
