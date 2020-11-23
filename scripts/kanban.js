@@ -451,11 +451,6 @@ function populateTasks() {
             var dueDate = document.createTextNode("Due date: " + result[i].enddate);
             var description = document.createTextNode("Description: " + result[i].description);
 
-            //allow user to double click on the taskbox to expand it
-            taskBox.addEventListener('dblclick', function(e){
-              expandTask(e);
-            })
-            
             if(result[i].taskstatus == 'backlog') {
               textToTaskBox(taskBox, taskName, dueDate, backlog, description);
               backlog.appendChild(taskBox)  
