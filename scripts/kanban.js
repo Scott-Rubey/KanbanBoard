@@ -77,26 +77,16 @@ function expandTask(e){
         var dueDateText = document.createTextNode("Due date: " + dueDate);
         var descText = document.createTextNode("Description: " + description);
 
-        //create the modal and insert all task info
+        //create the modal that will house all of the task info
         var expandedTask = document.createElement('div');
-        expandedTask.setAttribute('class', 'expandedTask');
-        expandedTask.appendChild(taskText);
-        expandedTask.innerHTML += "<br><br>";
-        expandedTask.appendChild(priorityText);
-        expandedTask.innerHTML += "<br><br>";
-        expandedTask.appendChild(dueDateText);
-        expandedTask.innerHTML += "<br><br>";
-        expandedTask.appendChild(descText);
-        //expandedTask.innerHTML += "<br><br>";
+        expandedTask.setAttribute('class', 'expandedTask')
 
-        //create close button
-        var close = document.createElement("input");
-        close.setAttribute("type", "button");
-        close.setAttribute("id", "closeBtn");
-        close.setAttribute("value", "X");
-        close.setAttribute("class", "button form");
-        close.setAttribute("onClick", "window.location.href='kanban.html'");
-        expandedTask.appendChild(close);
+        //create close button at top of modal
+        var closeBtn = createCloseBtn();
+        expandedTask.appendChild(closeBtn);
+
+        //insert all task info into modal
+        expandedTask = insertTaskInfo(expandedTask, taskText, priorityText, dueDateText, descText);
 
         //add expanded task modal to the DOM
         main.appendChild(expandedTask)
@@ -110,6 +100,32 @@ function expandTask(e){
   .fail(function(data) {
     console.log('Could not load task');
   })  
+}
+
+//create close button for expanded task form
+function createCloseBtn() {
+  var close = document.createElement("input");
+
+  close.setAttribute("type", "button");
+  close.setAttribute("id", "closeBtn");
+  close.setAttribute("value", "x");
+  close.setAttribute("onClick", "window.location.href='kanban.html'");
+
+  return close;
+}
+
+//insert all task info into Expanded Task modal
+function insertTaskInfo(expandedTask, taskText, priorityText, dueDateText, descText){
+  expandedTask.innerHTML += "<br><br>";
+  expandedTask.appendChild(taskText);
+  expandedTask.innerHTML += "<br><br>";
+  expandedTask.appendChild(priorityText);
+  expandedTask.innerHTML += "<br><br>";
+  expandedTask.appendChild(dueDateText);
+  expandedTask.innerHTML += "<br><br>";
+  expandedTask.appendChild(descText);
+
+  return expandedTask;
 }
 
 var right = false;

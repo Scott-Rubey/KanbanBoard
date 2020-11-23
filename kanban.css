@@ -59,11 +59,11 @@ div.taskBox {
   padding: 5px;
 }
 
-div.expandedTask {
+.expandedTask {
   border: 1px solid black;
   border-radius: 5px;
   width: 30%;
-  height: 300px;
+  height: 40%;
   display: flex;
   background-color: #ddd;
   font-size: large;
@@ -71,7 +71,7 @@ div.expandedTask {
   position: absolute;
   top: 25%;
   left: 35%;
-  padding: 20px;
+  /*  padding: 3%; */
   margin: auto;
 }
 
@@ -104,6 +104,25 @@ div.expandedTask {
 .button:active {
   background-color: #555;
   transform: translateY(2px);
+}
+
+#closeBtn {
+  position: relative;
+  background-color: red;
+  color: red;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  margin-top: 5px;
+  margin-left: 5px;
+  line-height: 0px;
+  text-decoration: none;
+  font-size: normal;
+}
+
+#closeBtn:hover {
+  color: black;
 }
 
 form#newTaskForm {
