@@ -66,13 +66,18 @@ div.taskBox {
   height: 40%;
   display: flex;
   background-color: #ddd;
-  font-size: large;
   z-index: 99;
   position: absolute;
   top: 25%;
   left: 35%;
-  /*  padding: 3%; */
   margin: auto;
+}
+
+div#container {
+  font-size: 20px;
+  margin-top: -6%;
+  margin-left: 8%;
+  margin-right: 8%;
 }
 
 .button {

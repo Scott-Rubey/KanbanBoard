@@ -79,14 +79,21 @@ function expandTask(e){
 
         //create the modal that will house all of the task info
         var expandedTask = document.createElement('div');
-        expandedTask.setAttribute('class', 'expandedTask')
+        expandedTask.setAttribute('class', 'expandedTask');
 
         //create close button at top of modal
         var closeBtn = createCloseBtn();
         expandedTask.appendChild(closeBtn);
 
-        //insert all task info into modal
-        expandedTask = insertTaskInfo(expandedTask, taskText, priorityText, dueDateText, descText);
+        //create a container for all task info to reside in
+        var container = document.createElement('div');
+        container.setAttribute('id', 'container');
+
+        //insert all task info into container for formattin
+        container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
+
+        //append the container with all task info to the modal
+        expandedTask.appendChild(container);
 
         //add expanded task modal to the DOM
         main.appendChild(expandedTask)
@@ -114,18 +121,18 @@ function createCloseBtn() {
   return close;
 }
 
-//insert all task info into Expanded Task modal
-function insertTaskInfo(expandedTask, taskText, priorityText, dueDateText, descText){
-  expandedTask.innerHTML += "<br><br>";
-  expandedTask.appendChild(taskText);
-  expandedTask.innerHTML += "<br><br>";
-  expandedTask.appendChild(priorityText);
-  expandedTask.innerHTML += "<br><br>";
-  expandedTask.appendChild(dueDateText);
-  expandedTask.innerHTML += "<br><br>";
-  expandedTask.appendChild(descText);
+//insert all task info into container for formatting
+function insertTaskInfo(container, taskText, priorityText, dueDateText, descText){
+  container.innerHTML += "<br><br>";
+  container.appendChild(taskText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(priorityText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(dueDateText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(descText);
 
-  return expandedTask;
+  return container;
 }
 
 var right = false;
