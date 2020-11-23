@@ -48,9 +48,12 @@ function activateColumns(columns){
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
-  var id = e.target.id;
-  var split = id.split('-');
+  var taskId = e.target.id;
+  var split = taskId.split('-');
   var i = split[1];
+
+  var urlString = window.location.search
+  var id = urlString.slice(1, urlString.length).split('=')
   
   $.ajax({
     type: 'GET', 
@@ -63,28 +66,50 @@ function expandTask(e){
         var parsed = JSON.parse(data);
         var result = parsed.tasks;
 
-        console.log(parsed);
+        //capture fields from associated row in DB
+        var taskName = result[i].taskname;
+        var priority = result[i].taskpriority;
+        var dueDate = result[i].enddate;
+        var description = result[i].taskdescription;
 
-        //var taskName = result[i].taskname;
-        //var dueDate = result[i].enddate;
-        //var description = result[i].description;
+        var taskText = document.createTextNode("Task: " + taskName);
+        var priorityText = document.createTextNode("Priority: " + priority);
+        var dueDateText = document.createTextNode("Due date: " + dueDate);
+        var descText = document.createTextNode("Description: " + description);
+
+        //create the modal and insert all task info
+        var expandedTask = document.createElement('div');
+        expandedTask.setAttribute('class', 'expandedTask');
+        expandedTask.appendChild(taskText);
+        expandedTask.innerHTML += "<br><br>";
+        expandedTask.appendChild(priorityText);
+        expandedTask.innerHTML += "<br><br>";
+        expandedTask.appendChild(dueDateText);
+        expandedTask.innerHTML += "<br><br>";
+        expandedTask.appendChild(descText);
+        //expandedTask.innerHTML += "<br><br>";
+
+        //create close button
+        var close = document.createElement("input");
+        close.setAttribute("type", "button");
+        close.setAttribute("id", "closeBtn");
+        close.setAttribute("value", "X");
+        close.setAttribute("class", "button form");
+        close.setAttribute("onClick", "window.location.href='kanban.html'");
+        expandedTask.appendChild(close);
+
+        //add expanded task modal to the DOM
+        main.appendChild(expandedTask)
+
+        //make it draggable
+        drag(expandedTask);
+
+        e.stopPropagation(); 
     }
   })
   .fail(function(data) {
     console.log('Could not load task');
   })  
-
-  //console.log(description);
-
-  /*var expandedTask = document.createElement('div');
-  expandedTask.setAttribute('class', 'expandedTask');
-  expandedTask.createTextNode("Task ame: " + taskBox);
-
-  drag(expandedTask);
-
-  main.appendChild(expandedTask);
-
-  e.stopPropagation();  */
 }
 
 var right = false;
