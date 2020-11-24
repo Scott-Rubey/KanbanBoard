@@ -25,11 +25,11 @@ if($res == "") {
   
     if(!$insert) {                                      //Insert error
         http_response_code(404);                        //Send error code back to ajax to handle error
-        echo "not working";
+        echo(array("not"=> "working"));
         // die("Login unsuccessful"); 
     }
 
-    pg_query($conn, "UPDATE project SET modified = $d WHERE projectid = "."'".$_SESSION['currentproject']."'");     //Update project modified date 
+    pg_query($conn, "UPDATE project SET modified = "."'".strval($d)."'"."WHERE projectid = "."'".$_SESSION['currentproject']."'");     //Update project modified date 
 
     http_response_code(200); 
     echo json_encode(array("success"=>true, "duplicate"=>false)); 
