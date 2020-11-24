@@ -541,7 +541,10 @@ function populateTasks() {
 
 $('body').on('submit', 'form', function(e) {
 
-//e.preventDefault()
+var urlString = window.location.search
+var id = urlString.slice(1, urlString.length).split('=')
+
+e.preventDefault()
 var priority = document.getElementById('priorityBtn')
 var taskName = $('#newTaskBox').val()
 var taskDescription = $('#description').val()
@@ -562,11 +565,12 @@ $.ajax({
 })
 .done(function(data) {
     var data = JSON.parse(data)
+    console.log(data)
     if(data.success) {
         if(data.duplicate == true) {
             alert("You already have a task by that name.")
         } 
-        window.location.reload()      //Reload project to update tasks 
+        window.location.href = "http://localhost:8000/kanban.html?id=" + id[1]
     }
 })
 .fail(function(data) {
