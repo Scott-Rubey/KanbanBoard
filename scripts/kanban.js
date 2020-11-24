@@ -12,6 +12,34 @@ window.onload = function(){
   activateColumns([backlogColumn, inProgressColumn, completeColumn]);
 }
 
+//populate the inProgress column with records from the database
+function populateInProgress() {
+  var inProgress = document.getElementById("inProgress-column");
+
+  for (var i = 1; i < 8; ++i) {
+    var taskBox = createTaskBox();
+    var taskName = document.createTextNode("Task name: Test task " + i);
+    var dueDate = document.createTextNode("Due date: placeholder");
+
+    textToTaskBox(taskBox, taskName, dueDate, inProgress);
+    inProgress.appendChild(taskBox);
+  }
+}
+
+//populate the complete column with records from the database
+function populateComplete() {
+  var complete = document.getElementById("complete-column");
+
+  for (var i = 1; i < 3; ++i) {
+    var taskBox = createTaskBox();
+    var taskName = document.createTextNode("Task name: Test task " + i);
+    var dueDate = document.createTextNode("Due date: placeholder");
+
+    textToTaskBox(taskBox, taskName, dueDate, complete);
+    complete.appendChild(taskBox);
+  }
+}
+
 function createTaskBox(index){
   var taskBox = document.createElement("div");
 
@@ -30,7 +58,7 @@ function createTaskBox(index){
 }
 
 //format database records
-function textToTaskBox(taskBox, taskName, dueDate, column) {
+function textToTaskBox(taskBox, taskName, dueDate) {
   taskBox.appendChild(taskName);
   taskBox.innerHTML += "<br>";
   taskBox.appendChild(dueDate);
@@ -158,76 +186,99 @@ function handleDragOver(e){
 }
 
 //add colored borders to appropriate column when dragging task box
-function handleDragEnter(e){
+function handleDragEnter(e) {
   //if moving element from backlog to inprogress, add blue border
-  if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
-    inProgressColumn.classList.add('goRight');
+  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)) {
+    inProgressColumn.classList.add("goRight");
     right = true;
   }
   //if moving element from inprogress to complete, add blue border
-  else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)){
-    completeColumn.classList.add('goRight');
+  else if (
+    inProgressColumn.contains(dragSrcEl) &&
+    completeColumn.contains(this)
+  ) {
+    completeColumn.classList.add("goRight");
     right = true;
   }
   //if moving element from inprogress to backlog, add red border
-  else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)){
-    backlogColumn.classList.add('goLeft');
+  else if (
+    inProgressColumn.contains(dragSrcEl) &&
+    backlogColumn.contains(this)
+  ) {
+    backlogColumn.classList.add("goLeft");
     right = false;
   }
   //if moving element from complete to inProgress, add red border
-  else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
-    inProgressColumn.classList.add('goLeft');
+  else if (
+    completeColumn.contains(dragSrcEl) &&
+    inProgressColumn.contains(this)
+  ) {
+    inProgressColumn.classList.add("goLeft");
     right = false;
-  }  
+  } else {
+    return false;
+  }
+  return true;
 }
 
 //remove colored borders once drag event finished
-function handleDragEnd(e){
+function handleDragEnd(e) {
   //if task was moved from backlog to inprogress, remove blue border
-  if(inProgressColumn.contains(dragSrcEl) && right === true)
-    inProgressColumn.classList.remove('goRight');
+  if (inProgressColumn.contains(dragSrcEl) && right === true) {
+    inProgressColumn.classList.remove("goRight");
+  }
 
   //if task was moved from inprogress to complete, remove blue border
-  else if(completeColumn.contains(dragSrcEl))
-    completeColumn.classList.remove('goRight');
+  else if (completeColumn.contains(dragSrcEl)) {
+    completeColumn.classList.remove("goRight");
+  }
 
   //if task was moved from inprogress to backlog, remove red border
-  else if(backlogColumn.contains(dragSrcEl))
-    backlogColumn.classList.remove('goLeft');
+  else if (backlogColumn.contains(dragSrcEl)) {
+    backlogColumn.classList.remove("goLeft");
+  }
 
   //if task was moved from complete to inprogress, remove red border
-  else if(inProgressColumn.contains(dragSrcEl) && right === false)
-    inProgressColumn.classList.remove('goLeft');  
-} 
+  else if (inProgressColumn.contains(dragSrcEl) && right === false) {
+    inProgressColumn.classList.remove("goLeft");
+  } else {
+    return false;
+  }
+  return true;
+}
 
 //drops the task box in the appropriate column
-function handleDrop(e){
+function handleDrop(e) {
   e.stopPropagation();
 
   //user may move backlog items to inprogress
-  if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
     inProgressColumn.appendChild(dragSrcEl);
-
   //user may move inProgress items to Complete
-  else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this))
+  else if (
+    inProgressColumn.contains(dragSrcEl) &&
+    completeColumn.contains(this)
+  )
     completeColumn.appendChild(dragSrcEl);
-
   //user may move items backwards from inProgress to Backlog
-  else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
+  else if (inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
     backlogColumn.appendChild(dragSrcEl);
-
   //user may move items backwards from complete to inProgress
-  else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+  else if (
+    completeColumn.contains(dragSrcEl) &&
+    inProgressColumn.contains(this)
+  )
     inProgressColumn.appendChild(dragSrcEl);
-
   //user may not move tasks by more than one column at a time
-  else if((completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
-          (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))){
+  else if (
+    (completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
+    (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))
+  ) {
     alert("You may only move tasks by one column at a time");
 
     //remove any colored borders after alert
-    inProgressColumn.classList.remove('goRight');
-    inProgressColumn.classList.remove('goLeft');
+    inProgressColumn.classList.remove("goRight");
+    inProgressColumn.classList.remove("goLeft");
   }
 
   return false;
@@ -269,11 +320,13 @@ function createForm(e){
 //add the box in which we can enter the name of the task
 function addTaskBox(newTaskForm){
     var taskBox = document.createElement("input");
+
     taskBox.setAttribute("type", "text");
     taskBox.setAttribute("id", "newTaskBox");
     taskBox.setAttribute("placeholder", "Enter task");
     taskBox.setAttribute("required", true);
     taskBox.setAttribute("class", "newTaskInput");
+
     newTaskForm.appendChild(taskBox); 
     newTaskForm.innerHTML += "<br>";
 
@@ -376,7 +429,10 @@ function drag(form) {
   var priority = document.getElementById("priorityBtn");
   var option = document.getElementsByClassName("dropdown-item");
 
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  var pos1 = 0, 
+    pos2 = 0, 
+    pos3 = 0, 
+    pos4 = 0;
 
   //allow user to input task, priority and description without getting stuck in drag mode
   if(input)
@@ -451,11 +507,17 @@ function populateTasks() {
           var inProgress = document.getElementById("inProgress-column");
           var complete = document.getElementById("complete-column");
 
-          for(var i = 0; i < result.length; i++){
+          for (var i = 0; i < result.length; i++) {
             var taskBox = createTaskBox(i);
-            var taskName = document.createTextNode("Task name: " + result[i].taskname);
-            var dueDate = document.createTextNode("Due date: " + result[i].enddate);
-            var description = document.createTextNode("Description: " + result[i].description);
+            var taskName = document.createTextNode(
+              "Task name: " + result[i].taskname
+            );
+            var dueDate = document.createTextNode(
+              "Due date: " + result[i].enddate
+            );
+            var description = document.createTextNode(
+              "Description: " + result[i].description
+            );
 
             if(result[i].taskstatus == 'backlog') {
               textToTaskBox(taskBox, taskName, dueDate, backlog, description);
@@ -486,11 +548,11 @@ var taskDescription = $('#description').val()
 var endDate = $('#dueDateBox').val()
 
 var formData= {
-  'taskname': taskName,
-  'taskdescription': taskDescription,
-  'taskpriority': priority.options[priority.selectedIndex].text, 
-  'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
-  'enddate': endDate
+  taskname: taskName,
+  taskdescription: taskDescription,
+  taskpriority: priority.options[priority.selectedIndex].text,
+  taskstatus: "backlog", //Setting as default status for now, will change if user is allowed to choose status
+  enddate: endDate,
 }
 
 $.ajax({
@@ -512,21 +574,24 @@ $.ajax({
 })
 })
 
-module.exports.populateBacklog = populateBacklog;
-module.exports.populateInProgress = populateInProgress;
-module.exports.populateComplete = populateComplete;
-module.exports.createTaskBox = createTaskBox;
-module.exports.textToTaskBox = textToTaskBox;
-module.exports.activateColumns = activateColumns;
-module.exports.handleDragStart = handleDragStart;
-module.exports.handleDragOver = handleDragOver;
-module.exports.handleDragEnter = handleDragEnter;
-module.exports.handleDragEnd = handleDragEnd;
-module.exports.handleDrop = handleDrop;
-module.exports.createForm = createForm;
-module.exports.addTaskBox = addTaskBox;
-module.exports.addPriorityBox = addPriorityBox;
-module.exports.addDueDate = addDueDate;
-module.exports.addDescriptionBox = addDescriptionBox;
-module.exports.addButtons = addButtons;
-module.exports.drag = drag;
+// export functions for unit testing
+if (typeof module != "undefined") {
+  module.exports.populateBacklog = populateBacklog;
+  module.exports.populateInProgress = populateInProgress;
+  module.exports.populateComplete = populateComplete;
+  module.exports.createTaskBox = createTaskBox;
+  module.exports.textToTaskBox = textToTaskBox;
+  module.exports.activateColumns = activateColumns;
+  module.exports.handleDragStart = handleDragStart;
+  module.exports.handleDragOver = handleDragOver;
+  module.exports.handleDragEnter = handleDragEnter;
+  module.exports.handleDragEnd = handleDragEnd;
+  module.exports.handleDrop = handleDrop;
+  module.exports.createForm = createForm;
+  module.exports.addTaskBox = addTaskBox;
+  module.exports.addPriorityBox = addPriorityBox;
+  module.exports.addDueDate = addDueDate;
+  module.exports.addDescriptionBox = addDescriptionBox;
+  module.exports.addButtons = addButtons;
+  module.exports.drag = drag;
+}
