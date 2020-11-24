@@ -26,16 +26,6 @@ const addTaskBtn = document.getElementById("addTask");
 
 // Start tests here
 
-test('verify populateBacklog() no exceptions', () => {
-    document.body.innerHTML =
-`<div>
-<span id="backlog-column"/>
-<button id="addTask">
-<span id="main"/>
-</div>`;
-    expect(() => kanban.populateBacklog()).not.toThrow();
-  });
-
 test('verify populateInProgress() no exceptions', () => {
     document.body.innerHTML =
 `<div>
