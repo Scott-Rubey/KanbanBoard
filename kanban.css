@@ -63,16 +63,23 @@ div.taskBox {
   border: 1px solid black;
   border-radius: 5px;
   width: 30%;
-  height: 300px;
+  height: 40%;
   display: flex;
   background-color: #ddd;
-  font-size: large;
   z-index: 99;
   position: absolute;
   top: 25%;
   left: 35%;
-  padding: 20px;
   margin: auto;
+  box-shadow: 3px 3px 3px #888;
+  overflow: auto;
+}
+
+div#container {
+  font-size: 20px;
+  margin-top: -6%;
+  margin-left: 8%;
+  margin-right: 8%;
 }
 
 .button {
@@ -104,6 +111,25 @@ div.taskBox {
 .button:active {
   background-color: #555;
   transform: translateY(2px);
+}
+
+#closeBtn {
+  position: relative;
+  background-color: red;
+  color: red;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  margin-top: 5px;
+  margin-left: 5px;
+  line-height: 0px;
+  text-decoration: none;
+  font-size: normal;
+}
+
+#closeBtn:hover {
+  color: black;
 }
 
 form#newTaskForm {
