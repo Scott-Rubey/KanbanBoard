@@ -8,6 +8,7 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">    <!-- Avoids fake favicon requests --> 
 </head>
 <body>
+
     <!--Navigation bar-->
     <div id="nav-placeholder">
 
@@ -25,7 +26,7 @@
               <h2>Projects</h2>
             </div>
             <div class="col-sm">
-              <button class="btn btn-primary">New Project</button>
+              <a class="btn btn-primary" href="./new-project.html" role="button">New Project</a>
             </div>
           </div>
     </section>
@@ -51,7 +52,7 @@
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Edit Project</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -60,18 +61,18 @@
             <div class="modal-body">
 
                 <div class="form-group">
-                    <label for="exampleFormControlFile1">Project Name</label>
-                    <input class="form-control form-control-lg" type="text" placeholder="Project Name" required>
+                    <label for="exampleFormControlFile1">Change Project Name</label>
+                    <input id="newProjectName" class="form-control form-control-lg" type="text" placeholder="Project Name" required>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlTextarea1">List of users to invite, separated by semicolons:</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <label for="exampleFormControlTextarea1">Invite new users by email, separated by semicolons:</label>
+                    <textarea id="newCollabs" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="example@email.com;"></textarea>
                 </div>
             </div>
 
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
             </div>
         </form>
         </div>

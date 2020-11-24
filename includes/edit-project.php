@@ -1,38 +1,25 @@
 <?php include('./config.php');
 
-$projname = $_POST['projectname'];
+$projname = $_POST['newprojectname'];
 $collab = json_decode($_POST['collaborators']);
+$projid = $_POST['projectid'];
 
-$proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['userid']." AND projectname ="."'".$projname."'");         //Gets current user's projects
-$res = pg_fetch_result($proj, 'projectname');                                                                                       //Check for userid and proj to avoid duplicate proj names by different users
+$proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['userid']." AND projectid ="."'".$projid."'");         //Gets current user's projects
+$oldName = pg_fetch_result($proj, 'projectname');                                                                                       //Check for userid and proj to avoid duplicate proj names by different users
 
-if($res != "") {        //Project already exists by the supplied name 
+if(strcmp($projname, $oldName) == 0) {                                                                   //Project already exists by the supplied name 
 
-    $_SESSION['currentproject'] = pg_fetch_result($proj, 'projectid');             //Set current project id to duplicate
     http_response_code(200); 
     echo json_encode(array("success"=>true, "duplicate"=>true)); 
 
 } else {
 
-    $params = array(                                    //Assoc array with table values for 'person' to add new user to database
-        "projectid"=>"",
-        "userid"=>$_SESSION['userid'], 
-        "projectname"=>$projname,
-        "modified"=>date("Y-m-d") 
-    );  
-  
-    $insert = pg_insert($conn, 'project', $params);      //Insert user into database 
-  
-    if(!$insert) {                                      //Insert error
-        http_response_code(400);                        //Signal http error
-        die("Login unsuccessful"); 
-    }
+    pg_query($conn, "UPDATE project SET projectname = "."'".$projname."'"." WHERE projectid = ". $projid);
 
-    $q = pg_query($conn, "SELECT projectid FROM project WHERE userid = ".$_SESSION['userid']." AND projectname = ". "'".$_POST['projectname']."'");
-    $projid = pg_fetch_result($q, 'projectid'); 
-    $_SESSION['currentproject'] = $projid;          //Set current projectid 
+    // $d = date('Y-m-d');
+    // pg_query($conn, "UPDATE project SET modified = ".date("Y-m-d")." WHERE projectid = ". $projid);
 
-    //Check if collaborators were provided
+
     if(!empty($collab)) {                                                                              
         
         foreach($collab as $c) {                                                                                    //Loop to add collaborators
