@@ -28,48 +28,6 @@ function createTaskBox(index){
 
   return taskBox;
 }
-  
-  //populate the backlog column with records from the database
-  function populateBacklog(){
-    var backlog = document.getElementById("backlog-column");
-
-    for(var i = 1; i < 15; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-      
-      textToTaskBox(taskBox, taskName, dueDate, backlog);
-      backlog.appendChild(taskBox);  
-    }
-  }
-
-  //populate the inProgress column with records from the database
-  function populateInProgress(){
-    var inProgress = document.getElementById("inProgress-column");
-
-    for(var i = 1; i < 8; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-
-      textToTaskBox(taskBox, taskName, dueDate, inProgress);
-      inProgress.appendChild(taskBox);
-    }
-  }
-
-  //populate the complete column with records from the database
-  function populateComplete(){
-    var complete = document.getElementById("complete-column");
-
-    for(var i = 1; i < 3; ++i){
-      var taskBox = createTaskBox();
-      var taskName = document.createTextNode("Task name: Test task " + i);
-      var dueDate = document.createTextNode("Due date: placeholder");
-
-      textToTaskBox(taskBox, taskName, dueDate, complete);
-      complete.appendChild(taskBox);
-    }
-  }
 
 //format database records
 function textToTaskBox(taskBox, taskName, dueDate, column) {
@@ -199,60 +157,48 @@ function handleDragOver(e){
   return false;
 }
 
-  //add colored borders to appropriate column when dragging task box
-  function handleDragEnter(e){
-    //if moving element from backlog to inprogress, add blue border
-    if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
-      inProgressColumn.classList.add('goRight');
-      right = true;
-    }
-    //if moving element from inprogress to complete, add blue border
-    else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)){
-      completeColumn.classList.add('goRight');
-      right = true;
-    }
-    //if moving element from inprogress to backlog, add red border
-    else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)){
-      backlogColumn.classList.add('goLeft');
-      right = false;
-    }
-    //if moving element from complete to inProgress, add red border
-    else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
-      inProgressColumn.classList.add('goLeft');
-      right = false;
-    } else{
-      return false;
-    }
-    return true;
+//add colored borders to appropriate column when dragging task box
+function handleDragEnter(e){
+  //if moving element from backlog to inprogress, add blue border
+  if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
+    inProgressColumn.classList.add('goRight');
+    right = true;
   }
-
-  //remove colored borders once drag event finished
-  function handleDragEnd(e){
-    //if task was moved from backlog to inprogress, remove blue border
-    if(inProgressColumn.contains(dragSrcEl) && right === true){
-      inProgressColumn.classList.remove('goRight');
+  //if moving element from inprogress to complete, add blue border
+  else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)){
+    completeColumn.classList.add('goRight');
+    right = true;
   }
+  //if moving element from inprogress to backlog, add red border
+  else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)){
+    backlogColumn.classList.add('goLeft');
+    right = false;
+  }
+  //if moving element from complete to inProgress, add red border
+  else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
+    inProgressColumn.classList.add('goLeft');
+    right = false;
+  }  
+}
 
-    //if task was moved from inprogress to complete, remove blue border
-    else if(completeColumn.contains(dragSrcEl)){
-      completeColumn.classList.remove('goRight');
-    }
+//remove colored borders once drag event finished
+function handleDragEnd(e){
+  //if task was moved from backlog to inprogress, remove blue border
+  if(inProgressColumn.contains(dragSrcEl) && right === true)
+    inProgressColumn.classList.remove('goRight');
 
-    //if task was moved from inprogress to backlog, remove red border
-    else if(backlogColumn.contains(dragSrcEl)){
-      backlogColumn.classList.remove('goLeft');
-    }
+  //if task was moved from inprogress to complete, remove blue border
+  else if(completeColumn.contains(dragSrcEl))
+    completeColumn.classList.remove('goRight');
 
-    //if task was moved from complete to inprogress, remove red border
-    else if(inProgressColumn.contains(dragSrcEl) && right === false){
-      inProgressColumn.classList.remove('goLeft');  
-    }
+  //if task was moved from inprogress to backlog, remove red border
+  else if(backlogColumn.contains(dragSrcEl))
+    backlogColumn.classList.remove('goLeft');
 
-    else{
-      return false;
-    }
-    return true;
-  } 
+  //if task was moved from complete to inprogress, remove red border
+  else if(inProgressColumn.contains(dragSrcEl) && right === false)
+    inProgressColumn.classList.remove('goLeft');  
+} 
 
 //drops the task box in the appropriate column
 function handleDrop(e){
@@ -447,124 +393,123 @@ function drag(form) {
     event.preventDefault();
   }
 
-     function dragMouseDown(event) {
-      event = event || window.event;
+  function dragMouseDown(event) {
+    event = event || window.event;
 
-      // get the mouse cursor position at startup
-      pos3 = event.clientX;
-      pos4 = event.clientY;
-      document.onmouseup = closeDragElement;
+    // get the mouse cursor position at startup
+    pos3 = event.clientX;
+    pos4 = event.clientY;
+    document.onmouseup = closeDragElement;
 
-      // call function whenever the cursor moves
-      document.onmousemove = elementDrag;    
-    }
-
-    function elementDrag(event) {
-      event = event || window.event;
-      event.preventDefault();
-
-      // calculate the new cursor position
-      pos1 = pos3 - event.clientX;
-      pos2 = pos4 - event.clientY;
-      pos3 = event.clientX;
-      pos4 = event.clientY;
-
-      // set the element's new position
-      form.style.top = (form.offsetTop - pos2) + "px";
-      form.style.left = (form.offsetLeft - pos1) + "px";  
-    }
-
-    function closeDragElement() {
-      //stop moving when mouse button is released
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
+    // call function whenever the cursor moves
+    document.onmousemove = elementDrag;    
   }
+
+  function elementDrag(event) {
+    event = event || window.event;
+    event.preventDefault();
+
+    // calculate the new cursor position
+    pos1 = pos3 - event.clientX;
+    pos2 = pos4 - event.clientY;
+    pos3 = event.clientX;
+    pos4 = event.clientY;
+
+    // set the element's new position
+    form.style.top = (form.offsetTop - pos2) + "px";
+    form.style.left = (form.offsetLeft - pos1) + "px";  
+  }
+
+  function closeDragElement() {
+    //stop moving when mouse button is released
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
 
 function populateTasks() {
 
-    var urlString = window.location.search
-    var id = urlString.slice(1, urlString.length).split('=')
-    
+  var urlString = window.location.search
+  var id = urlString.slice(1, urlString.length).split('=')
+  
 
-    $.ajax({
-        type: 'GET', 
-        data: {'id': id[1]},
-        url: '../includes/kanban.php', 
-    })
-    .done(function(data) {
+  $.ajax({
+      type: 'GET', 
+      data: {'id': id[1]},
+      url: '../includes/kanban.php', 
+  })
+  .done(function(data) {
 
-        if(data != 'false') {
-            var parsed = JSON.parse(data)
-            var result = parsed.tasks
-            var projectName = parsed.projectname
+      if(data != 'false') {
+          var parsed = JSON.parse(data)
+          var result = parsed.tasks
+          var projectName = parsed.projectname
 
-            document.getElementById('projectName').innerHTML = projectName
+          document.getElementById('projectName').innerHTML = projectName
 
-            var backlog = document.getElementById("backlog-column");
-            var inProgress = document.getElementById("inProgress-column");
-            var complete = document.getElementById("complete-column");
+          var backlog = document.getElementById("backlog-column");
+          var inProgress = document.getElementById("inProgress-column");
+          var complete = document.getElementById("complete-column");
 
-            for(var i = 0; i < result.length; i++){
-              var taskBox = createTaskBox();
-              var taskName = document.createTextNode("Task name: " + result[i].taskname);
-              var dueDate = document.createTextNode("Due date: " + result[i].enddate);
-              var description = document.createTextNode("Description: " + result[i].description);
-              
-              if(result[i].taskstatus == 'backlog') {
-                textToTaskBox(taskBox, taskName, dueDate, backlog, description);
-                backlog.appendChild(taskBox)  
-              }
-              else if (result[i].taskstatus == 'inProgress') {
-                textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
-                inProgress.appendChild(taskBox)  
-              }
-              else {
-                textToTaskBox(taskBox, taskName, dueDate, complete, description);
-              }
+          for(var i = 0; i < result.length; i++){
+            var taskBox = createTaskBox(i);
+            var taskName = document.createTextNode("Task name: " + result[i].taskname);
+            var dueDate = document.createTextNode("Due date: " + result[i].enddate);
+            var description = document.createTextNode("Description: " + result[i].description);
+
+            if(result[i].taskstatus == 'backlog') {
+              textToTaskBox(taskBox, taskName, dueDate, backlog, description);
+              backlog.appendChild(taskBox)  
             }
-            //console.log(data)
-        }
-    })
-    .fail(function(data) {
-        console.log('Projects could not be retrieved')
-    })
+            else if (result[i].taskstatus == 'inProgress') {
+              textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
+              inProgress.appendChild(taskBox)  
+            }
+            else {
+              textToTaskBox(taskBox, taskName, dueDate, complete, description);
+            }
+          }
+          //console.log(data)
+      }
+  })
+  .fail(function(data) {
+      console.log('Projects could not be retrieved')
+  })
 }
 
 $('body').on('submit', 'form', function(e) {
 
-  //e.preventDefault()
-  var priority = document.getElementById('priorityBtn')
-  var taskName = $('#newTaskBox').val()
-  var taskDescription = $('#description').val()
-  var endDate = $('#dueDateBox').val(
+//e.preventDefault()
+var priority = document.getElementById('priorityBtn')
+var taskName = $('#newTaskBox').val()
+var taskDescription = $('#description').val()
+var endDate = $('#dueDateBox').val()
 
-  var formData= {
-    'taskname': $('#newTaskBox').val(),
-    'taskdescription': $('#description').val(),
-    'taskpriority': priority.options[priority.selectedIndex].text, 
-    'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
-    'enddate': $('#dueDateBox').val()
-  }
+var formData= {
+  'taskname': taskName,
+  'taskdescription': taskDescription,
+  'taskpriority': priority.options[priority.selectedIndex].text, 
+  'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
+  'enddate': endDate
+}
 
-  $.ajax({
-    type: 'POST', 
-    url: '../includes/new-task.php', 
-    data: formData,
-  })
-  .done(function(data) {
-      var data = JSON.parse(data)
-      if(data.success) {
-          if(data.duplicate == true) {
-              alert("You already have a task by that name.")
-          } 
-          window.location.reload()      //Reload project to update tasks 
-          
-      }
-  })
-  .fail(function(data) {
-    console.log(data)
-  })
+$.ajax({
+  type: 'POST', 
+  url: '../includes/new-task.php', 
+  data: formData,
+})
+.done(function(data) {
+    var data = JSON.parse(data)
+    if(data.success) {
+        if(data.duplicate == true) {
+            alert("You already have a task by that name.")
+        } 
+        window.location.reload()      //Reload project to update tasks 
+    }
+})
+.fail(function(data) {
+  console.log(data)
+})
 })
 
 module.exports.populateBacklog = populateBacklog;
