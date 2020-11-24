@@ -1,17 +1,34 @@
-  const backlogColumn = document.querySelector('.item1');
-  const inProgressColumn = document.querySelector('.item2');
-  const completeColumn = document.querySelector('.item3');
-  const main = document.getElementById("main");
-  const addTaskBtn = document.getElementById("addTask");
+const backlogColumn = document.querySelector('.item1');
+const inProgressColumn = document.querySelector('.item2');
+const completeColumn = document.querySelector('.item3');
+const main = document.getElementById("main");
+const addTaskBtn = document.getElementById("addTask");
+
+//Each time the kanban screen loads, populate all three columns with tasks from DB
+window.onload = function(){
+  populateTasks()
+
+  //make columns droppable
+  activateColumns([backlogColumn, inProgressColumn, completeColumn]);
+}
+
+function createTaskBox(index){
+  var taskBox = document.createElement("div");
+
+  taskBox.setAttribute("class", "taskBox");
+  taskBox.setAttribute("id", "taskBox-"+index);
+  taskBox.setAttribute("draggable", "true");
+
+  //allow ability to drag/drop task boxes
+  taskBox.addEventListener('dragstart', handleDragStart, false);
+  taskBox.addEventListener('dragover', handleDragOver, false);
+
+  //allow user to double click on the taskbox to expand it
+  taskBox.addEventListener('dblclick', expandTask, false)
+
+  return taskBox;
+}
   
-  //Each time the kanban screen loads, populate all three columns with tasks from DB
-  window.onload = function(){
-    populateTasks()
-
-    //make columns droppable
-    activateColumns([backlogColumn, inProgressColumn, completeColumn]);
-  }
-
   //populate the backlog column with records from the database
   function populateBacklog(){
     var backlog = document.getElementById("backlog-column");
@@ -54,55 +71,133 @@
     }
   }
 
-  function createTaskBox(){
-    var taskBox = document.createElement("div");
+//format database records
+function textToTaskBox(taskBox, taskName, dueDate, column) {
+  taskBox.appendChild(taskName);
+  taskBox.innerHTML += "<br>";
+  taskBox.appendChild(dueDate);
+} 
 
-    taskBox.setAttribute("class", "taskBox");
-    taskBox.setAttribute("id", "taskBox");
-    taskBox.setAttribute("draggable", "true");
+//make columns droppable, i.e. able to accept draggable task boxes
+function activateColumns(columns){
+  columns.forEach(function(column){
+    column.addEventListener('dragover', handleDragOver, false);
+    column.addEventListener('dragenter', handleDragEnter, false);
+    column.addEventListener('dragend', handleDragEnd, false);
+    column.addEventListener('drop', handleDrop, false);
+  });
+}
 
-    //allow ability to drag/drop task boxes
-    taskBox.addEventListener('dragstart', handleDragStart, false);
-    taskBox.addEventListener('dragover', handleDragOver, false);
+//used to make sure user cannot open more than one expanded task box at a time
+exTaskCount = 0;
 
-    //allow user to double click on the taskbox to expand it
-    taskBox.addEventListener('dblclick', expandTask, false)
+//create larger taskbox on double click so user can view all fields
+function expandTask(e){
+  var taskId = e.target.id;
+  var split = taskId.split('-');
+  var i = split[1];
 
-    return taskBox;
-  }
+  var urlString = window.location.search
+  var id = urlString.slice(1, urlString.length).split('=')
+  
+  $.ajax({
+    type: 'GET', 
+    data: {'id': id[1]},
+    url: '../includes/kanban.php', 
+  })
+  .done(function(data) {
 
-  //format database records
-  function textToTaskBox(taskBox, taskName, dueDate, column) {
-    taskBox.appendChild(taskName);
-    taskBox.innerHTML += "<br>";
-    taskBox.appendChild(dueDate);
-  } 
+    if(data != 'false') {
+        var parsed = JSON.parse(data);
+        var result = parsed.tasks;
 
-  //make columns droppable, i.e. able to accept draggable task boxes
-  function activateColumns(columns){
-    columns.forEach(function(column){
-      column.addEventListener('dragover', handleDragOver, false);
-      column.addEventListener('dragenter', handleDragEnter, false);
-      column.addEventListener('dragend', handleDragEnd, false);
-      column.addEventListener('drop', handleDrop, false);
-    });
-  }
+        //capture fields from associated row in DB
+        var taskName = result[i].taskname;
+        var priority = result[i].taskpriority;
+        var dueDate = result[i].enddate;
+        var description = result[i].taskdescription;
 
-  var right = false;
+        var taskText = document.createTextNode("Task: " + taskName);
+        var priorityText = document.createTextNode("Priority: " + priority);
+        var dueDateText = document.createTextNode("Due date: " + dueDate);
+        var descText = document.createTextNode("Description: " + description);
 
-  //set up the data transfer object
-  function handleDragStart(e){
-    dragSrcEl = this;
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-  }
+        //create the modal that will house all of the task info
+        var expandedTask = document.createElement('div');
+        expandedTask.setAttribute('class', 'expandedTask');
 
-  function handleDragOver(e){
-    if(e.preventDefault)
-      e.preventDefault();
+        //create close button at top of modal
+        var closeBtn = createCloseBtn();
+        expandedTask.appendChild(closeBtn);
 
-    return false;
-  }
+        //create a container for all task info to reside in
+        var container = document.createElement('div');
+        container.setAttribute('id', 'container');
+
+        //insert all task info into container for formattin
+        container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
+
+        //append the container with all task info to the modal
+        expandedTask.appendChild(container);
+
+        //add expanded task modal to the DOM
+        if(exTaskCount === 0){
+          main.appendChild(expandedTask)
+          exTaskCount = 1;
+        }
+
+        //make it draggable
+        drag(expandedTask);
+
+        e.stopPropagation(); 
+    }
+  })
+  .fail(function(data) {
+    console.log('Could not load task');
+  })  
+}
+
+//create close button for expanded task form
+function createCloseBtn() {
+  var close = document.createElement("input");
+
+  close.setAttribute("type", "button");
+  close.setAttribute("id", "closeBtn");
+  close.setAttribute("value", "x");
+  close.setAttribute("onClick", "window.location.href='kanban.html'");
+
+  return close;
+}
+
+//insert all task info into container for formatting
+function insertTaskInfo(container, taskText, priorityText, dueDateText, descText){
+  container.innerHTML += "<br><br>";
+  container.appendChild(taskText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(priorityText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(dueDateText);
+  container.innerHTML += "<br><br>";
+  container.appendChild(descText);
+
+  return container;
+}
+
+var right = false;
+
+//set up the data transfer object
+function handleDragStart(e){
+  dragSrcEl = this;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragOver(e){
+  if(e.preventDefault)
+    e.preventDefault();
+
+  return false;
+}
 
   //add colored borders to appropriate column when dragging task box
   function handleDragEnter(e){
@@ -159,213 +254,200 @@
     return true;
   } 
 
-  //drops the task box in the appropriate column
-  function handleDrop(e){
-    e.stopPropagation();
+//drops the task box in the appropriate column
+function handleDrop(e){
+  e.stopPropagation();
 
-    //user may move backlog items to inprogress
-    if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
-      inProgressColumn.appendChild(dragSrcEl);
+  //user may move backlog items to inprogress
+  if(backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+    inProgressColumn.appendChild(dragSrcEl);
 
-    //user may move inProgress items to Complete
-    else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this))
-      completeColumn.appendChild(dragSrcEl);
+  //user may move inProgress items to Complete
+  else if(inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this))
+    completeColumn.appendChild(dragSrcEl);
 
-    //user may move items backwards from inProgress to Backlog
-    else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
-      backlogColumn.appendChild(dragSrcEl);
+  //user may move items backwards from inProgress to Backlog
+  else if(inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
+    backlogColumn.appendChild(dragSrcEl);
 
-    //user may move items backwards from complete to inProgress
-    else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
-      inProgressColumn.appendChild(dragSrcEl);
+  //user may move items backwards from complete to inProgress
+  else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+    inProgressColumn.appendChild(dragSrcEl);
 
-    //user may not move tasks by more than one column at a time
-    else if((completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
-            (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))){
-      alert("You may only move tasks by one column at a time");
+  //user may not move tasks by more than one column at a time
+  else if((completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
+          (backlogColumn.contains(dragSrcEl) && completeColumn.contains(this))){
+    alert("You may only move tasks by one column at a time");
 
-      //remove any colored borders after alert
-      inProgressColumn.classList.remove('goRight');
-      inProgressColumn.classList.remove('goLeft');
-    }
-
-    return false;
+    //remove any colored borders after alert
+    inProgressColumn.classList.remove('goRight');
+    inProgressColumn.classList.remove('goLeft');
   }
 
-  //create larger taskbox on double click so user can view all fields
-  function expandTask(e){
-      var taskBox = this;
-      
-      var expandedTask = document.createElement('div');
-      expandedTask.setAttribute('class', 'expandedTask');
-      expandedTask.innerText += 'Test Expanded Task';
+  return false;
+}
 
-      drag(expandedTask);
+//ensures there's no more than one 'add task' form on the screen at once
+var count = 0;
 
-      main.appendChild(expandedTask);
-  }
+//add an editable text-box when Add Task button is clicked
+addTaskBtn.addEventListener("click", function(e){
+  if(count === 0)
+    main.appendChild(createForm());
+});
 
-  //ensures there's no more than one 'add task' form on the screen at once
-  var count = 0;
+//create new task form when 'add task' button pressed
+function createForm(e){
+    var newTaskForm = document.createElement("form");
+    newTaskForm.setAttribute("id", "newTaskForm");
+    newTaskForm.setAttribute("class", "popup");
 
-  //add an editable text-box when Add Task button is clicked
-  addTaskBtn.addEventListener("click", function(e){
-    if(count === 0)
-      main.appendChild(createForm());
-  });
+    //add a header to the new form
+    newTaskForm.innerHTML += "<h2 id='newTaskFormHeader'>Create New Task</h2>";
 
-  //create new task form when 'add task' button pressed
-  function createForm(e){
-      var newTaskForm = document.createElement("form");
-      newTaskForm.setAttribute("id", "newTaskForm");
-      newTaskForm.setAttribute("class", "popup");
+    //add form elements
+    addTaskBox(newTaskForm);
+    addPriorityBox(newTaskForm);
+    addDueDate(newTaskForm);
+    addDescriptionBox(newTaskForm);
+    addButtons(newTaskForm);
 
-      //add a header to the new form
-      newTaskForm.innerHTML += "<h2 id='newTaskFormHeader'>Create New Task</h2>";
+    //make form draggable
+    drag(newTaskForm);
 
-      //add form elements
-      addTaskBox(newTaskForm);
-      addPriorityBox(newTaskForm);
-      addDueDate(newTaskForm);
-      addDescriptionBox(newTaskForm);
-      addButtons(newTaskForm);
-
-      //make form draggable
-      drag(newTaskForm);
-
-      count = 1;
-
-      return newTaskForm;
-  }
-
-  //add the box in which we can enter the name of the task
-  function addTaskBox(newTaskForm){
-      var taskBox = document.createElement("input");
-      taskBox.setAttribute("type", "text");
-      taskBox.setAttribute("id", "newTaskBox");
-      taskBox.setAttribute("placeholder", "Enter task");
-      taskBox.setAttribute("required", true);
-      taskBox.setAttribute("class", "newTaskInput");
-      newTaskForm.appendChild(taskBox); 
-      newTaskForm.innerHTML += "<br>";
-
-      return newTaskForm;
-  }
-
-  //enter high, medium or low priority
-  function addPriorityBox(newTaskForm){
-      //add drop down box
-      var priorityBtn = document.createElement("select");
-      priorityBtn.setAttribute("id", "priorityBtn");
-      priorityBtn.innerText += "Priority";
-
-      //add drop down items
-      var div = document.createElement("div");
-      div.setAttribute("class", "newTaskInput");
-      div.setAttribute("aria-labelledby", "dropdownMenuButton");
-      newTaskForm.appendChild(div);
-
-      var high = document.createElement("option");
-      high.setAttribute("class", "dropdown-item");
-      high.setAttribute("value", "high");
-      high.innerHTML += "High Priority";
-      priorityBtn.appendChild(high);
-
-      var medium = document.createElement("option");
-      medium.setAttribute("value", "medium");
-      medium.setAttribute("class", "dropdown-item");
-      medium.innerHTML += "Medium Priority";
-      priorityBtn.appendChild(medium);
-
-      var low = document.createElement("option");
-      low.setAttribute("value", "low");
-      low.setAttribute("class", "dropdown-item");
-      low.innerHTML += "Low Priority";
-      priorityBtn.appendChild(low); 
-
-      newTaskForm.appendChild(priorityBtn);
-      newTaskForm.innerHTML += "<br>";
-
-      return newTaskForm;
-  }
-
-  //field for adding due date
-  function addDueDate(newTaskForm){
-    //create date box
-    var dueDateBox = document.createElement("input");
-    dueDateBox.setAttribute("id", "dueDateBox");
-    dueDateBox.setAttribute("type", "date");
-
-    //add to form
-    newTaskForm.appendChild(dueDateBox);
+    count = 1;
 
     return newTaskForm;
+}
+
+//add the box in which we can enter the name of the task
+function addTaskBox(newTaskForm){
+    var taskBox = document.createElement("input");
+    taskBox.setAttribute("type", "text");
+    taskBox.setAttribute("id", "newTaskBox");
+    taskBox.setAttribute("placeholder", "Enter task");
+    taskBox.setAttribute("required", true);
+    taskBox.setAttribute("class", "newTaskInput");
+    newTaskForm.appendChild(taskBox); 
+    newTaskForm.innerHTML += "<br>";
+
+    return newTaskForm;
+}
+
+//enter high, medium or low priority
+function addPriorityBox(newTaskForm){
+    //add drop down box
+    var priorityBtn = document.createElement("select");
+    priorityBtn.setAttribute("id", "priorityBtn");
+    priorityBtn.innerText += "Priority";
+
+    //add drop down items
+    var div = document.createElement("div");
+    div.setAttribute("class", "newTaskInput");
+    div.setAttribute("aria-labelledby", "dropdownMenuButton");
+    newTaskForm.appendChild(div);
+
+    var high = document.createElement("option");
+    high.setAttribute("class", "dropdown-item");
+    high.setAttribute("value", "high");
+    high.innerHTML += "High Priority";
+    priorityBtn.appendChild(high);
+
+    var medium = document.createElement("option");
+    medium.setAttribute("value", "medium");
+    medium.setAttribute("class", "dropdown-item");
+    medium.innerHTML += "Medium Priority";
+    priorityBtn.appendChild(medium);
+
+    var low = document.createElement("option");
+    low.setAttribute("value", "low");
+    low.setAttribute("class", "dropdown-item");
+    low.innerHTML += "Low Priority";
+    priorityBtn.appendChild(low); 
+
+    newTaskForm.appendChild(priorityBtn);
+    newTaskForm.innerHTML += "<br>";
+
+    return newTaskForm;
+}
+
+//field for adding due date
+function addDueDate(newTaskForm){
+  //create date box
+  var dueDateBox = document.createElement("input");
+  dueDateBox.setAttribute("id", "dueDateBox");
+  dueDateBox.setAttribute("type", "date");
+
+  //add to form
+  newTaskForm.appendChild(dueDateBox);
+
+  return newTaskForm;
+}
+
+//textarea for adding a full description of the new task
+function addDescriptionBox(newTaskForm){
+    //create textarea
+    var description = document.createElement("textarea");
+    description.setAttribute("id", "description");
+    description.setAttribute("rows", "4");
+    description.setAttribute("placeholder", "Enter details");
+    description.setAttribute("class", "newTaskInput");
+
+    //add to form
+    newTaskForm.appendChild(description);
+    newTaskForm.innerHTML += "<br>";
+
+    return newTaskForm;
+}
+
+function addButtons(newTaskForm){
+    //create submit button
+    var submit = document.createElement("input");
+    submit.setAttribute("type", "submit");
+    submit.setAttribute("id", "submitBtn");
+    submit.setAttribute("value", "Submit");
+    submit.setAttribute("class", "button form");
+
+    //create reset button
+    var reset = document.createElement("input");
+    reset.setAttribute("type", "button");
+    reset.setAttribute("id", "resetBtn");
+    reset.setAttribute("value", "Cancel");
+    reset.setAttribute("class", "button form");
+    reset.setAttribute("onClick", "window.location.href='kanban.html'");
+
+    //add to form
+    newTaskForm.appendChild(reset);
+    newTaskForm.appendChild(submit);
+    newTaskForm.innerHTML += "<br>";
+
+    return newTaskForm;
+}
+
+//credit to https://www.w3schools.com/howto/howto_js_draggable.asp for dragging basics
+function drag(form) {
+  var input = document.querySelector("input");
+  var priority = document.getElementById("priorityBtn");
+  var option = document.getElementsByClassName("dropdown-item");
+
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+  //allow user to input task, priority and description without getting stuck in drag mode
+  if(input)
+    input.onmousedown = prevent;
+  else if(priority)
+    priority.onmousedown = prevent;
+  else if(option)
+    option.onmousedown = prevent;
+
+  //otherwise, you can drag from anywhere on the form
+  form.onmousedown = dragMouseDown;  
+
+  function prevent(event){
+    event.preventDefault();
   }
 
-  //textarea for adding a full description of the new task
-  function addDescriptionBox(newTaskForm){
-      //create textarea
-      var description = document.createElement("textarea");
-      description.setAttribute("id", "description");
-      description.setAttribute("rows", "4");
-      description.setAttribute("placeholder", "Enter details");
-      description.setAttribute("class", "newTaskInput");
-
-      //add to form
-      newTaskForm.appendChild(description);
-      newTaskForm.innerHTML += "<br>";
-
-      return newTaskForm;
-  }
-
-  function addButtons(newTaskForm){
-      //create submit button
-      var submit = document.createElement("input");
-      submit.setAttribute("type", "submit");
-      submit.setAttribute("id", "submitBtn");
-      submit.setAttribute("value", "Submit");
-      submit.setAttribute("class", "button form");
-
-      //create reset button
-      var reset = document.createElement("input");
-      reset.setAttribute("type", "button");
-      reset.setAttribute("id", "resetBtn");
-      reset.setAttribute("value", "Cancel");
-      reset.setAttribute("class", "button form");
-      reset.setAttribute("onClick", "window.location.href='kanban.html'");
-
-      //add to form
-      newTaskForm.appendChild(reset);
-      newTaskForm.appendChild(submit);
-      newTaskForm.innerHTML += "<br>";
-
-      return newTaskForm;
-  }
-
-  //credit to https://www.w3schools.com/howto/howto_js_draggable.asp for dragging basics
-  function drag(form) {
-    var input = document.querySelector("input");
-    var priority = document.getElementById("priorityBtn");
-    var option = document.getElementsByClassName("dropdown-item");
-
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-    //allow user to input task, priority and description without getting stuck in drag mode
-    if(input)
-      input.onmousedown = prevent;
-    else if(priority)
-      priority.onmousedown = prevent;
-    else if(option)
-      option.onmousedown = prevent;
-
-    //otherwise, you can drag from anywhere on the form
-    form.onmousedown = dragMouseDown;  
-
-    function prevent(event){
-      event.preventDefault();
-    }
-
-    function dragMouseDown(event) {
+     function dragMouseDown(event) {
       event = event || window.event;
 
       // get the mouse cursor position at startup
@@ -455,14 +537,14 @@ $('body').on('submit', 'form', function(e) {
   var priority = document.getElementById('priorityBtn')
   var taskName = $('#newTaskBox').val()
   var taskDescription = $('#description').val()
-  var endDate = $('#dueDateBox').val()
+  var endDate = $('#dueDateBox').val(
 
   var formData= {
-    'taskname': taskName,
-    'taskdescription': taskDescription,
+    'taskname': $('#newTaskBox').val(),
+    'taskdescription': $('#description').val(),
     'taskpriority': priority.options[priority.selectedIndex].text, 
     'taskstatus': 'backlog',        //Setting as default status for now, will change if user is allowed to choose status
-    'enddate': endDate
+    'enddate': $('#dueDateBox').val()
   }
 
   $.ajax({
@@ -477,6 +559,7 @@ $('body').on('submit', 'form', function(e) {
               alert("You already have a task by that name.")
           } 
           window.location.reload()      //Reload project to update tasks 
+          
       }
   })
   .fail(function(data) {
@@ -484,24 +567,21 @@ $('body').on('submit', 'form', function(e) {
   })
 })
 
-// export functions for unit testing
-if(typeof module != 'undefined'){
-  module.exports.populateBacklog = populateBacklog;
-  module.exports.populateInProgress = populateInProgress;
-  module.exports.populateComplete = populateComplete;
-  module.exports.createTaskBox = createTaskBox;
-  module.exports.textToTaskBox = textToTaskBox;
-  module.exports.activateColumns = activateColumns;
-  module.exports.handleDragStart = handleDragStart;
-  module.exports.handleDragOver = handleDragOver;
-  module.exports.handleDragEnter = handleDragEnter;
-  module.exports.handleDragEnd = handleDragEnd;
-  module.exports.handleDrop = handleDrop;
-  module.exports.createForm = createForm;
-  module.exports.addTaskBox = addTaskBox;
-  module.exports.addPriorityBox = addPriorityBox;
-  module.exports.addDueDate = addDueDate;
-  module.exports.addDescriptionBox = addDescriptionBox;
-  module.exports.addButtons = addButtons;
-  module.exports.drag = drag;
-}
+module.exports.populateBacklog = populateBacklog;
+module.exports.populateInProgress = populateInProgress;
+module.exports.populateComplete = populateComplete;
+module.exports.createTaskBox = createTaskBox;
+module.exports.textToTaskBox = textToTaskBox;
+module.exports.activateColumns = activateColumns;
+module.exports.handleDragStart = handleDragStart;
+module.exports.handleDragOver = handleDragOver;
+module.exports.handleDragEnter = handleDragEnter;
+module.exports.handleDragEnd = handleDragEnd;
+module.exports.handleDrop = handleDrop;
+module.exports.createForm = createForm;
+module.exports.addTaskBox = addTaskBox;
+module.exports.addPriorityBox = addPriorityBox;
+module.exports.addDueDate = addDueDate;
+module.exports.addDescriptionBox = addDescriptionBox;
+module.exports.addButtons = addButtons;
+module.exports.drag = drag;
