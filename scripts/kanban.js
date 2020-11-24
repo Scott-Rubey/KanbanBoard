@@ -12,6 +12,48 @@
     activateColumns([backlogColumn, inProgressColumn, completeColumn]);
   }
 
+  //populate the backlog column with records from the database
+  function populateBacklog(){
+    var backlog = document.getElementById("backlog-column");
+
+    for(var i = 1; i < 15; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+      
+      textToTaskBox(taskBox, taskName, dueDate, backlog);
+      backlog.appendChild(taskBox);  
+    }
+  }
+
+  //populate the inProgress column with records from the database
+  function populateInProgress(){
+    var inProgress = document.getElementById("inProgress-column");
+
+    for(var i = 1; i < 8; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+
+      textToTaskBox(taskBox, taskName, dueDate, inProgress);
+      inProgress.appendChild(taskBox);
+    }
+  }
+
+  //populate the complete column with records from the database
+  function populateComplete(){
+    var complete = document.getElementById("complete-column");
+
+    for(var i = 1; i < 3; ++i){
+      var taskBox = createTaskBox();
+      var taskName = document.createTextNode("Task name: Test task " + i);
+      var dueDate = document.createTextNode("Due date: placeholder");
+
+      textToTaskBox(taskBox, taskName, dueDate, complete);
+      complete.appendChild(taskBox);
+    }
+  }
+
   function createTaskBox(){
     var taskBox = document.createElement("div");
 
@@ -83,26 +125,38 @@
     else if(completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)){
       inProgressColumn.classList.add('goLeft');
       right = false;
-    }  
+    } else{
+      return false;
+    }
+    return true;
   }
 
   //remove colored borders once drag event finished
   function handleDragEnd(e){
     //if task was moved from backlog to inprogress, remove blue border
-    if(inProgressColumn.contains(dragSrcEl) && right === true)
+    if(inProgressColumn.contains(dragSrcEl) && right === true){
       inProgressColumn.classList.remove('goRight');
+  }
 
     //if task was moved from inprogress to complete, remove blue border
-    else if(completeColumn.contains(dragSrcEl))
+    else if(completeColumn.contains(dragSrcEl)){
       completeColumn.classList.remove('goRight');
+    }
 
     //if task was moved from inprogress to backlog, remove red border
-    else if(backlogColumn.contains(dragSrcEl))
+    else if(backlogColumn.contains(dragSrcEl)){
       backlogColumn.classList.remove('goLeft');
+    }
 
     //if task was moved from complete to inprogress, remove red border
-    else if(inProgressColumn.contains(dragSrcEl) && right === false)
+    else if(inProgressColumn.contains(dragSrcEl) && right === false){
       inProgressColumn.classList.remove('goLeft');  
+    }
+
+    else{
+      return false;
+    }
+    return true;
   } 
 
   //drops the task box in the appropriate column
@@ -429,21 +483,24 @@ $('body').on('submit', 'form', function(e) {
   })
 })
 
-module.exports.populateBacklog = populateBacklog;
-module.exports.populateInProgress = populateInProgress;
-module.exports.populateComplete = populateComplete;
-module.exports.createTaskBox = createTaskBox;
-module.exports.textToTaskBox = textToTaskBox;
-module.exports.activateColumns = activateColumns;
-module.exports.handleDragStart = handleDragStart;
-module.exports.handleDragOver = handleDragOver;
-module.exports.handleDragEnter = handleDragEnter;
-module.exports.handleDragEnd = handleDragEnd;
-module.exports.handleDrop = handleDrop;
-module.exports.createForm = createForm;
-module.exports.addTaskBox = addTaskBox;
-module.exports.addPriorityBox = addPriorityBox;
-module.exports.addDueDate = addDueDate;
-module.exports.addDescriptionBox = addDescriptionBox;
-module.exports.addButtons = addButtons;
-module.exports.drag = drag;
+// export functions for unit testing
+if(typeof module != 'undefined'){
+  module.exports.populateBacklog = populateBacklog;
+  module.exports.populateInProgress = populateInProgress;
+  module.exports.populateComplete = populateComplete;
+  module.exports.createTaskBox = createTaskBox;
+  module.exports.textToTaskBox = textToTaskBox;
+  module.exports.activateColumns = activateColumns;
+  module.exports.handleDragStart = handleDragStart;
+  module.exports.handleDragOver = handleDragOver;
+  module.exports.handleDragEnter = handleDragEnter;
+  module.exports.handleDragEnd = handleDragEnd;
+  module.exports.handleDrop = handleDrop;
+  module.exports.createForm = createForm;
+  module.exports.addTaskBox = addTaskBox;
+  module.exports.addPriorityBox = addPriorityBox;
+  module.exports.addDueDate = addDueDate;
+  module.exports.addDescriptionBox = addDescriptionBox;
+  module.exports.addButtons = addButtons;
+  module.exports.drag = drag;
+}
