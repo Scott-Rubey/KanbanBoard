@@ -71,6 +71,8 @@ div.taskBox {
   top: 25%;
   left: 35%;
   margin: auto;
+  box-shadow: 3px 3px 3px #888;
+  overflow: auto;
 }
 
 div#container {

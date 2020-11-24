@@ -46,6 +46,9 @@ function activateColumns(columns){
   });
 }
 
+//used to make sure user cannot open more than one expanded task box at a time
+exTaskCount = 0;
+
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
   var taskId = e.target.id;
@@ -96,7 +99,10 @@ function expandTask(e){
         expandedTask.appendChild(container);
 
         //add expanded task modal to the DOM
-        main.appendChild(expandedTask)
+        if(exTaskCount === 0){
+          main.appendChild(expandedTask)
+          exTaskCount = 1;
+        }
 
         //make it draggable
         drag(expandedTask);
