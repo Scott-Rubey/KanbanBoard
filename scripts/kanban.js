@@ -349,7 +349,6 @@ function populateTasks() {
 
     var urlString = window.location.search
     var id = urlString.slice(1, urlString.length).split('=')
-    
 
     $.ajax({
         type: 'GET', 
