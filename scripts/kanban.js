@@ -154,12 +154,22 @@ function expandTask(e){
 
 //create close button for expanded task form
 function createCloseBtn(e) {
+
+  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+
+  if(!projectId) {
+    console.log("ProjectID not set for task popup close button")
+  } else {
+    var loc = "http://localhost:8000/kanban.html?id=" + projectId
+    console.log("Link: " + loc)
+  }
+
   var close = document.createElement("input");
 
   close.setAttribute("type", "button");
   close.setAttribute("id", "closeBtn");
   close.setAttribute("value", "x");
-  close.setAttribute("onClick", "window.location.href='kanban.html'");
+  close.setAttribute("onClick", "window.location.href=" + "'" + loc + "'");
 
   return close;
 }
@@ -556,44 +566,44 @@ function populateTasks() {
   })
   .done(function(data) {
 
-    console.log(data)
-      if(data != 'false') {
-          var parsed = JSON.parse(data)
-          var result = parsed.tasks
-          var projectName = parsed.projectname
+    //console.log(data)
+    if(data != 'false') {
+        var parsed = JSON.parse(data)
+        var result = parsed.tasks
+        var projectName = parsed.projectname
 
-          document.getElementById('projectName').innerHTML = projectName
+        document.getElementById('projectName').innerHTML = projectName
 
-          var backlog = document.getElementById("backlog-column");
-          var inProgress = document.getElementById("inProgress-column");
-          var complete = document.getElementById("complete-column");
+        var backlog = document.getElementById("backlog-column");
+        var inProgress = document.getElementById("inProgress-column");
+        var complete = document.getElementById("complete-column");
 
-          for (var i = 0; i < result.length; i++) {
-            var taskBox = createTaskBox(result[i].taskid);
-            var taskName = document.createTextNode(
-              "Task name: " + result[i].taskname
-            );
-            var dueDate = document.createTextNode(
-              "Due date: " + result[i].enddate
-            );
-            var description = document.createTextNode(
-              "Description: " + result[i].description
-            );
+        for (var i = 0; i < result.length; i++) {
+          var taskBox = createTaskBox(result[i].taskid);
+          var taskName = document.createTextNode(
+            "Task name: " + result[i].taskname
+          );
+          var dueDate = document.createTextNode(
+            "Due date: " + result[i].enddate
+          );
+          var description = document.createTextNode(
+            "Description: " + result[i].description
+          );
 
-            if(result[i].taskstatus == 'backlog') {
-              textToTaskBox(taskBox, taskName, dueDate, backlog, description);
-              backlog.appendChild(taskBox)  
-            }
-            else if (result[i].taskstatus == 'inProgress') {
-              textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
-              inProgress.appendChild(taskBox)  
-            }
-            else if (result[i].taskstatus == 'complete')  {
-              textToTaskBox(taskBox, taskName, dueDate, complete, description);
-              complete.appendChild(taskBox)
-            }
+          if(result[i].taskstatus == 'backlog') {
+            textToTaskBox(taskBox, taskName, dueDate, backlog, description);
+            backlog.appendChild(taskBox)  
           }
-          //console.log(data)
+          else if (result[i].taskstatus == 'inProgress') {
+            textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
+            inProgress.appendChild(taskBox)  
+          }
+          else if (result[i].taskstatus == 'complete')  {
+            textToTaskBox(taskBox, taskName, dueDate, complete, description);
+            complete.appendChild(taskBox)
+          }
+        }
+        //console.log(data)
       }
   })
   .fail(function(data) {
