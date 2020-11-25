@@ -286,7 +286,9 @@ function handleDrop(e) {
 
 //ensures there's no more than one 'add task' form on the screen at once
 var count = 0;
-
+//this is a line
+//this is a line
+//this is a line
 //add an editable text-box when Add Task button is clicked
 addTaskBtn.addEventListener("click", function(e){
   if(count === 0)
