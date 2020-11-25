@@ -6,6 +6,26 @@ $taskpriority = $_POST['taskpriority'];
 $taskstatus = $_POST['taskstatus'];
 $enddate = $_POST['enddate'];
 
+if(!isset($taskname)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'task name was not provided correctly')); 
+}
+
+if(!isset($taskdescription)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'task description was not provided correctly')); 
+}
+
+if(!isset($taskpriority)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'task priority was not provided correctly')); 
+}
+
+if(!isset($taskstatus)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'task status was not provided correctly')); 
+}
+
+if(!isset($enddate)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'end date was not provided correctly')); 
+}
+
 $task = pg_query($conn, "SELECT * FROM task WHERE projectid = "."'".$_SESSION['currentproject']."'"." AND taskname="."'".$taskname."'");         //Gets current user's projects
 $res = pg_fetch_result($task, 'taskname');
 

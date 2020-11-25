@@ -3,6 +3,10 @@
 $projname = $_POST['projectname'];
 $collab = json_decode($_POST['collaborators']);
 
+if(!isset($projname)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'project name was not provided correctly')); 
+}
+
 $proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['userid']." AND projectname ="."'".$projname."'");         //Gets current user's projects
 $res = pg_fetch_result($proj, 'projectname');                                                                                       //Check for userid and proj to avoid duplicate proj names by different users
 
