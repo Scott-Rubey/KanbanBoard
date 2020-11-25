@@ -580,7 +580,7 @@ $.ajax({
 
 // export functions for unit testing
 if (typeof module != "undefined") {
-  module.exports.populateBacklog = populateBacklog;
+  //module.exports.populateBacklog = populateBacklog;
   module.exports.populateInProgress = populateInProgress;
   module.exports.populateComplete = populateComplete;
   module.exports.createTaskBox = createTaskBox;
