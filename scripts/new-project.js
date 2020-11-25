@@ -27,7 +27,7 @@ $(document).ready(function() {
                 if(data.duplicate == true) {
                     alert("You already have a project by that name.")
                 } else {
-                    window.location.href = "http://localhost:8000/kanban.html?" + data.projectid      //Go back to user's projects page
+                    window.location.href = "http://localhost:8000/kanban.html?id=" + data.projectid      //Go back to user's projects page
                 }
             }
         })

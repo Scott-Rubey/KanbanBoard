@@ -14,10 +14,10 @@ if(strcmp($projname, $oldName) == 0) {                                          
 
 } else {
 
-    pg_query($conn, "UPDATE project SET projectname = "."'".$projname."'"." WHERE projectid = ". $projid);
+    pg_query($conn, "UPDATE project SET projectname = '".$projname."' WHERE projectid = ". $projid);
 
-    // $d = date('Y-m-d');
-    // pg_query($conn, "UPDATE project SET modified = ".date("Y-m-d")." WHERE projectid = ". $projid);
+    $d = date('Y-m-d');
+    pg_query($conn, "UPDATE project SET modified = '".strval($d)."' WHERE projectid = ". $projid);
 
 
     if(!empty($collab)) {                                                                              

@@ -40,11 +40,11 @@ function populateComplete() {
   }
 }
 
-function createTaskBox(index){
+function createTaskBox(projectID){
   var taskBox = document.createElement("div");
 
   taskBox.setAttribute("class", "taskBox");
-  taskBox.setAttribute("id", "taskBox-"+index);
+  taskBox.setAttribute("id", "taskBox-"+projectID);
   taskBox.setAttribute("draggable", "true");
 
   //allow ability to drag/drop task boxes
@@ -79,63 +79,72 @@ exTaskCount = 0;
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
-  var taskId = e.target.id;
-  var split = taskId.split('-');
-  var i = split[1];
+  var taskId = e.target.id.split('-')[1];
+  console.log(taskId)
 
-  var urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('=')
+  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  console.log(projectId)
   
   $.ajax({
     type: 'GET', 
-    data: {'id': id[1]},
+    data: {'id': projectId},
     url: '../includes/kanban.php', 
   })
   .done(function(data) {
+    console.log(data)
 
-    if(data != 'false') {
-        var parsed = JSON.parse(data);
-        var result = parsed.tasks;
+    if(data) {
+      var targetTask 
+      var result = JSON.parse(data).tasks
 
-        //capture fields from associated row in DB
-        var taskName = result[i].taskname;
-        var priority = result[i].taskpriority;
-        var dueDate = result[i].enddate;
-        var description = result[i].taskdescription;
-
-        var taskText = document.createTextNode("Task: " + taskName);
-        var priorityText = document.createTextNode("Priority: " + priority);
-        var dueDateText = document.createTextNode("Due date: " + dueDate);
-        var descText = document.createTextNode("Description: " + description);
-
-        //create the modal that will house all of the task info
-        var expandedTask = document.createElement('div');
-        expandedTask.setAttribute('class', 'expandedTask');
-
-        //create close button at top of modal
-        var closeBtn = createCloseBtn();
-        expandedTask.appendChild(closeBtn);
-
-        //create a container for all task info to reside in
-        var container = document.createElement('div');
-        container.setAttribute('id', 'container');
-
-        //insert all task info into container for formattin
-        container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
-
-        //append the container with all task info to the modal
-        expandedTask.appendChild(container);
-
-        //add expanded task modal to the DOM
-        if(exTaskCount === 0){
-          main.appendChild(expandedTask)
-          exTaskCount = 1;
+      for(var i = 0; i < result.length; i++) {
+        if(result[i].taskid == taskId) {
+          targetTask = i
+          break
         }
+      }
 
-        //make it draggable
-        drag(expandedTask);
+      console.log(result[targetTask].taskid)
 
-        e.stopPropagation(); 
+      //capture fields from associated row in DB
+      var taskName = result[targetTask].taskname;
+      var priority = result[targetTask].taskpriority;
+      var dueDate = result[targetTask].enddate;
+      var description = result[targetTask].taskdescription;
+
+      var taskText = document.createTextNode("Task: " + taskName);
+      var priorityText = document.createTextNode("Priority: " + priority);
+      var dueDateText = document.createTextNode("Due date: " + dueDate);
+      var descText = document.createTextNode("Description: " + description);
+
+      //create the modal that will house all of the task info
+      var expandedTask = document.createElement('div');
+      expandedTask.setAttribute('class', 'expandedTask');
+
+      //create close button at top of modal
+      var closeBtn = createCloseBtn();
+      expandedTask.appendChild(closeBtn);
+
+      //create a container for all task info to reside in
+      var container = document.createElement('div');
+      container.setAttribute('id', 'container');
+
+      //insert all task info into container for formattin
+      container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
+
+      //append the container with all task info to the modal
+      expandedTask.appendChild(container);
+
+      //add expanded task modal to the DOM
+      if(exTaskCount === 0){
+        main.appendChild(expandedTask)
+        exTaskCount = 1;
+      }
+
+      //make it draggable
+      drag(expandedTask);
+
+      e.stopPropagation(); 
     }
   })
   .fail(function(data) {
@@ -144,7 +153,7 @@ function expandTask(e){
 }
 
 //create close button for expanded task form
-function createCloseBtn() {
+function createCloseBtn(e) {
   var close = document.createElement("input");
 
   close.setAttribute("type", "button");
@@ -251,24 +260,32 @@ function handleDragEnd(e) {
 function handleDrop(e) {
   e.stopPropagation();
 
+  var status = "" 
+
   //user may move backlog items to inprogress
-  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)) {
     inProgressColumn.appendChild(dragSrcEl);
+    status = 'inProgress';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move inProgress items to Complete
-  else if (
-    inProgressColumn.contains(dragSrcEl) &&
-    completeColumn.contains(this)
-  )
+  else if (inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)) {
     completeColumn.appendChild(dragSrcEl);
+    status = 'complete';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move items backwards from inProgress to Backlog
-  else if (inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
+  else if (inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)) {
     backlogColumn.appendChild(dragSrcEl);
+    status = 'backlog';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move items backwards from complete to inProgress
-  else if (
-    completeColumn.contains(dragSrcEl) &&
-    inProgressColumn.contains(this)
-  )
+  else if (completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)) {
     inProgressColumn.appendChild(dragSrcEl);
+    status = 'inProgress';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may not move tasks by more than one column at a time
   else if (
     (completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
@@ -284,11 +301,52 @@ function handleDrop(e) {
   return false;
 }
 
+function updateTaskStatus(src, status) {
+
+  // console.log(src.id)
+  // console.log(status)
+  // console.log(taskid)
+
+  var urlString = window.location.search
+  var projectid = urlString.slice(1, urlString.length).split('=')     //Get projectID from query string
+  
+  if(!src) {
+    console.log("Src taskbox not set correctly")
+    return
+  }
+  
+  if(!status) {
+    console.log("Status was not set correctly")
+    return 
+  }
+  
+  var taskid = src.id.split("-")[1]
+
+  if(!projectid) {
+    console.log("ID was not set correctly")
+    return 
+  }
+
+  $.ajax({
+    type: 'POST', 
+    data: {
+      'projectid': projectid[1], 
+      'taskStatus': status,
+      'taskID': taskid
+    }, 
+    url: '../includes/update-task.php' 
+  })
+  .done(function(data) {
+    console.log(data)
+  })
+  .fail(function(data) {
+    console.log(data)
+  })
+}
+
 //ensures there's no more than one 'add task' form on the screen at once
 var count = 0;
-//this is a line
-//this is a line
-//this is a line
+
 //add an editable text-box when Add Task button is clicked
 addTaskBtn.addEventListener("click", function(e){
   if(count === 0)
@@ -498,6 +556,7 @@ function populateTasks() {
   })
   .done(function(data) {
 
+    console.log(data)
       if(data != 'false') {
           var parsed = JSON.parse(data)
           var result = parsed.tasks
@@ -510,7 +569,7 @@ function populateTasks() {
           var complete = document.getElementById("complete-column");
 
           for (var i = 0; i < result.length; i++) {
-            var taskBox = createTaskBox(i);
+            var taskBox = createTaskBox(result[i].taskid);
             var taskName = document.createTextNode(
               "Task name: " + result[i].taskname
             );
@@ -529,8 +588,9 @@ function populateTasks() {
               textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
               inProgress.appendChild(taskBox)  
             }
-            else {
+            else if (result[i].taskstatus == 'complete')  {
               textToTaskBox(taskBox, taskName, dueDate, complete, description);
+              complete.appendChild(taskBox)
             }
           }
           //console.log(data)
