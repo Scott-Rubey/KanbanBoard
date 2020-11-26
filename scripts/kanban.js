@@ -13,6 +13,7 @@ window.onload = function(){
 }
 
 //populate the inProgress column with records from the database
+//for testing purposes only
 function populateInProgress() {
   var inProgress = document.getElementById("inProgress-column");
 
@@ -27,6 +28,7 @@ function populateInProgress() {
 }
 
 //populate the complete column with records from the database
+//for testing purposes only
 function populateComplete() {
   var complete = document.getElementById("complete-column");
 
@@ -40,6 +42,7 @@ function populateComplete() {
   }
 }
 
+//create the DOM element that contains task info once Add Task form has been submitted
 function createTaskBox(index){
   var taskBox = document.createElement("div");
 
@@ -79,10 +82,12 @@ exTaskCount = 0;
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
+  //parse the index from the taskbox's unique id
   var taskId = e.target.id;
   var split = taskId.split('-');
   var i = split[1];
 
+  //ajax call to index into the database and retrieve the record for the target taskbox that was clicked
   var urlString = window.location.search
   var id = urlString.slice(1, urlString.length).split('=')
   
@@ -178,6 +183,7 @@ function handleDragStart(e){
   e.dataTransfer.setData('text/html', this.innerHTML);
 }
 
+//make sure the taskbox doesn't do anything unexpected when dragging it to a different column
 function handleDragOver(e){
   if(e.preventDefault)
     e.preventDefault();
@@ -288,6 +294,7 @@ function handleDrop(e) {
 var count = 0;
 
 //add an editable text-box when Add Task button is clicked
+//count variable is for making sure the user can't open more than one Add Task form at one time
 addTaskBtn.addEventListener("click", function(e){
   if(count === 0)
     main.appendChild(createForm());
@@ -312,6 +319,7 @@ function createForm(e){
     //make form draggable
     drag(newTaskForm);
 
+    //1 task form is open...don't open more than one
     count = 1;
 
     return newTaskForm;
@@ -346,24 +354,28 @@ function addPriorityBox(newTaskForm){
     div.setAttribute("aria-labelledby", "dropdownMenuButton");
     newTaskForm.appendChild(div);
 
+    //dropdown item: high priority
     var high = document.createElement("option");
     high.setAttribute("class", "dropdown-item");
     high.setAttribute("value", "high");
     high.innerHTML += "High Priority";
     priorityBtn.appendChild(high);
 
+    //dropdown item: medium priority
     var medium = document.createElement("option");
     medium.setAttribute("value", "medium");
     medium.setAttribute("class", "dropdown-item");
     medium.innerHTML += "Medium Priority";
     priorityBtn.appendChild(medium);
 
+    //dropdown item: low priority
     var low = document.createElement("option");
     low.setAttribute("value", "low");
     low.setAttribute("class", "dropdown-item");
     low.innerHTML += "Low Priority";
     priorityBtn.appendChild(low); 
 
+    //add the select-box to the Add Task form
     newTaskForm.appendChild(priorityBtn);
     newTaskForm.innerHTML += "<br>";
 
@@ -483,6 +495,8 @@ function drag(form) {
   }
 }
 
+//called each time the screen is refreshed (i.e. everytime a task is added or relocated amongst columns)
+//populates tasks from the DB into their appropriate columns based on 'taskstatus' attribute
 function populateTasks() {
 
   var urlString = window.location.search

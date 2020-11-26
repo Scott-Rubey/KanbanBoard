@@ -1,9 +1,11 @@
+/*container element for the navigation*/
 .topnav {
   overflow: hidden;
   background-color: #007bff;
   height: 55px;
 }
 
+/*the menu choices, both for full screen and mobile*/
 .topnav a,
 .topnav select {
   float: right;
@@ -15,16 +17,19 @@
   font-size: 17px;
 }
 
+/*change the color when full-screen menu items are hovered over*/
 .topnav a:hover {
   background-color: #ddd;
   color: black;
 }
 
+/*change the color when full-screen menu items are clicked*/
 .topnav a.active {
   background-color: #4caf50;
   color: white;
 }
 
+/*lefthand text that reflects the current project name*/
 .topnav p {
   float: left;
   color: #f2f2f2;
@@ -35,6 +40,7 @@
   font-size: 17px;
 }
 
+/*format the mobile-size navigation*/
 .topnav select {
   display: none;
   background-color: #007bff;
@@ -43,10 +49,12 @@
 }
 
 @media only screen and (max-device-width: 414px) {
+  /*don't display the full-screen navigation on mobile sizes*/
   .topnav ul {
     display: none;
   }
 
+  /*effectively, the menu button on mobile sizes*/
   .topnav select {
     display: inline-block;
   }
