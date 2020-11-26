@@ -1,13 +1,16 @@
+/*heading at top of page*/
 h2 {
   margin-top: 15px;
 }
 
+/*the container element that houses the calendar*/
 div {
   padding: 40px;
   margin-left: 185px;
   display: flex;
 }
 
+/*the calendar element itself*/
 iframe {
   width: 1000px;
   height: 650px;
@@ -15,11 +18,13 @@ iframe {
 
 /*iPad turned sideways*/
 @media only screen and (max-device-width: 1024px) {
+  /*the container element that houses the calendar*/
   div {
     padding: 25px;
     margin-left: 50px;
   }
 
+  /*the calendar element itself*/
   iframe {
     width: 60ch;
     height: 60vh;
@@ -28,12 +33,14 @@ iframe {
 
 /*iPad turned vertically*/
 @media only screen and (max-device-width: 768px) {
+  /*the container element that houses the calendar*/
   div {
     padding: 25px;
     margin-left: 55px;
     margin-top: 135px;
   }
 
+  /*the calendar element itself*/
   iframe {
     width: 40ch;
     height: 30vh;
@@ -42,12 +49,14 @@ iframe {
 
 /*iPhone*/
 @media only screen and (max-device-width: 414px) {
+  /*the container element that houses the calendar*/
   div {
     padding: 10px;
     margin-left: 2px;
     margin-top: 110px;
   }
 
+  /*the calendar element itself*/
   iframe {
     width: 35ch;
     height: 50vh;
