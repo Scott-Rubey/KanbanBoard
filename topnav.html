@@ -15,12 +15,25 @@
 
   <body>
     <nav class="topnav">
-        <p id ="projectName"></p>
-        <a href="http://localhost:8000/index.html" onclick="signOut()">Sign out</a>
-        <a href="convo.html">Convo</a>
-        <a href="calendar.html">Calendar</a>
-        <a href="kanban.html">Board</a>
-        <a href="http://localhost:8000/projects.html">Projects</a>
+      <p id ="projectName"></p>
+      <ul class="list">
+        <li><a href="http://localhost:8000/index.html" onclick="signOut()">Sign out</a></li>
+        <li><a href="convo.html">Convo</a></li>
+        <li><a href="calendar.html">Calendar</a></li>
+        <li><a href="kanban.html">Board</a></li>
+        <li><a href="http://localhost:8000/projects.html">Projects</a></li>
+      </ul>
+
+      <select class="select">
+        <option value="" selected="selected"></option>
+
+        <option><a href="http://localhost:8000/projects.html">Projects</a></option>
+        <option value="kanban.html">Board</option>
+        <option value="calendar.html">Calendar</option>
+        <option value="convo.html">Convo</option>
+        <option value="http://localhost:8000/index.html" onclick="signOut()">Sign out</option>
+
+      </select>  
     </nav>
   </body>
 </html>

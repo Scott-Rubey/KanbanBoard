@@ -5,11 +5,13 @@
   list-style-type: none;
 }
 
+/*everything below the topnav*/
 .main {
   z-index: -1;
   padding: 40px;
 }
 
+/*the columns on the main Kanban screen*/
 .flex-item {
   width: 250px;
   height: 70vh;
@@ -20,20 +22,24 @@
   overflow: scroll;
 }
 
+/*add a dotted blue border when taskboxes are moved into a column to the right*/
 .goRight {
   border: 2px dotted blue;
 }
 
+/*add a dotted red border when taskboxes are moved into a column to the left*/
 .goLeft {
   border: 2px dotted red;
 }
 
+/*contains the labels of each kanban column*/
 .flex-container1 {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
 
+/*container element for the kanban columns*/
 .flex-container2 {
   display: flex;
   flex-direction: row;
@@ -47,7 +53,6 @@ div.taskBox {
   flex-direction: column;
   flex-flow: column;
   z-index: 99;
-  /*  width: 232px;  */
   width: 99%;
   height: 60px;
   border: 1px solid black;
@@ -56,10 +61,11 @@ div.taskBox {
   margin-top: 1px;
   margin-left: 1px;
   color: black;
-  font-size: 15px;
+  font-size: 13px;
   padding: 5px;
 }
 
+/*the modal that pops up when user double clicks a task to show its complete info*/
 .expandedTask {
   border: 1px solid black;
   border-radius: 5px;
@@ -76,6 +82,7 @@ div.taskBox {
   overflow: auto;
 }
 
+/*container element housing the expanded task text*/
 div#container {
   font-size: 20px;
   margin-top: -6%;
@@ -83,6 +90,7 @@ div#container {
   margin-right: 8%;
 }
 
+/*formatting for the Add Task button, as well as the submit button on the Add Task form*/
 .button {
   width: 100px;
   height: 30px;
@@ -105,15 +113,18 @@ div#container {
   text-align: center;
 }
 
+/*change color on hover...applies to buttons referenced above*/
 .button:hover {
   background-color: #999;
 }
 
+/*change color and add animation when buttons referenced above are pressed*/
 .button:active {
   background-color: #555;
   transform: translateY(2px);
 }
 
+/*the close button on the Expanded Task modal*/
 #closeBtn {
   position: relative;
   background-color: red;
@@ -129,10 +140,12 @@ div#container {
   font-size: normal;
 }
 
+/*add a black 'x' when hovering over the red circle -- references the close button immediately above*/
 #closeBtn:hover {
   color: black;
 }
 
+/*the new task form modal*/
 form#newTaskForm {
   width: 30%;
   height: 45vh;
@@ -148,6 +161,7 @@ form#newTaskForm {
   left: 505px;
 }
 
+/*h2 element in the new task form modal*/
 h2#newTaskFormHeader {
   font-size: 20px;
   text-align: center;
@@ -155,6 +169,7 @@ h2#newTaskFormHeader {
   cursor: move;
 }
 
+/*input boxes in the new task form*/
 input#newTaskBox,
 input#dueDateBox {
   width: 75%;
@@ -163,10 +178,12 @@ input#dueDateBox {
   margin-left: 45px;
 }
 
+/*make the placeholder text in the new task form's input boxes a slightly lighter shade*/
 ::placeholder {
   color: #888;
 }
 
+/*applies to the select drop-down in the new task form*/
 select#priorityBtn {
   font-size: small;
   height: 30px;
@@ -174,6 +191,7 @@ select#priorityBtn {
   margin-left: 45px;
 }
 
+/*the description text-area in the new task form*/
 textArea#description {
   font-size: small;
   width: 75%;
@@ -181,12 +199,14 @@ textArea#description {
   margin-top: 5px;
 }
 
+/*give the button on the new task form slightly different dimensions that what was created for the Add Task button*/
 .button.form {
   width: 30%;
 }
 
 /*Screen sizes larger than 15"*/
 @media only screen and (min-device-width: 1920px) {
+  /*formatting for the Add Task button, as well as the submit button on the Add Task form*/
   .button {
     margin-left: 14%;
   }
@@ -194,10 +214,12 @@ textArea#description {
 
 /*iPad turned sideways*/
 @media only screen and (max-device-width: 1024px) {
+  /*formatting for the Add Task button, as well as the submit button on the Add Task form*/
   .button {
     margin-left: 11.25%;
   }
 
+  /*the new task form modal*/
   form#newTaskForm {
     width: 40%;
     height: 44vh;
@@ -205,10 +227,12 @@ textArea#description {
     left: 305px;
   }
 
+  /*give the button on the new task form slightly different dimensions that what was created for the Add Task button*/
   .button.form {
     left: 10px;
   }
 
+  /*the modal that pops up when user double clicks a task to show its complete info*/
   .expandedTask {
     width: 45%;
     height: 45%;
@@ -219,10 +243,12 @@ textArea#description {
 
 /*iPad turned vertically*/
 @media only screen and (max-device-width: 768px) {
+  /*formatting for the Add Task button, as well as the submit button on the Add Task form*/
   .button {
     margin-left: 10%;
   }
 
+  /*the new task form modal*/
   form#newTaskForm {
     width: 50%;
     height: 40vh;
@@ -230,10 +256,12 @@ textArea#description {
     left: 190px;
   }
 
+  /*give the button on the new task form slightly different dimensions that what was created for the Add Task button*/
   .button.form {
     left: 16px;
   }
 
+  /*the modal that pops up when user double clicks a task to show its complete info*/
   .expandedTask {
     width: 40%;
     height: 35%;
@@ -244,15 +272,19 @@ textArea#description {
 
 /*iPhone*/
 @media only screen and (max-device-width: 414px) {
+  /*mobile screens will need smaller font size for column labels*/
   .flexlabel {
     font-size: 17px;
   }
+
+  /*formatting for the Add Task button, as well as the submit button on the Add Task form*/
   .button {
     margin-left: 4%;
     width: 25%;
     font-size: 10px;
   }
 
+  /*the new task form modal*/
   form#newTaskForm {
     width: 79%;
     height: 45vh;
@@ -260,6 +292,7 @@ textArea#description {
     left: 43px;
   }
 
+  /*format sizes for the input fields in the new task form*/
   input#newTaskBox,
   select#priorityBtn,
   textarea#description {
@@ -268,17 +301,20 @@ textArea#description {
     margin-left: auto;
   }
 
+  /*give the button on the new task form slightly different dimensions that what was created for the Add Task button*/
   .button.form {
     width: 45%;
     left: 8px;
   }
 
+  /*taskBoxes get loaded into the Backlog, InProgress and Complete columns each time the window loads*/
   div.taskBox {
     width: 98%;
     height: 80px;
     font-size: 10px;
   }
 
+  /*the modal that pops up when user double clicks a task to show its complete info*/
   .expandedTask {
     width: 65%;
     height: 40%;
@@ -286,6 +322,7 @@ textArea#description {
     left: 18%;
   }
 
+  /*container element housing the expanded task text*/
   div#container {
     font-size: 15px;
   }
