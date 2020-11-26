@@ -32,9 +32,18 @@ $(document).ready(function() {
                     label.innerHTML = "N/A"
                 a.appendChild(label)
                 if(result[i].projectid)
-                    a.href = 'http://localhost:8000/kanban.html?id=' + result[i].projectid
+                    a.href = 'kanban.html?id=' + result[i].projectid
                 else
-                a.href = 'http://localhost:8000/kanban.html'
+                    a.href = 'kanban.html'
+                // Include task badge
+                var spanclassattr = "badge ml-2 ";
+                if(result[i].taskcount < 3)
+                    spanclassattr += "badge-success";
+                else if(result[i].taskcount < 5)
+                    spanclassattr += "badge-warning";
+                else
+                    spanclassattr += "badge-danger";
+                a.innerHTML += `<span class="${spanclassattr}">${result[i].taskcount}</span>`
                 th.appendChild(a)
 
                 var td1 = document.createElement('td')
