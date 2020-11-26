@@ -50,7 +50,7 @@ $(document).ready(function() {
                 if(result[i].collaborators)
                     td1.innerHTML = result[i].collaborators                     //Add collaborators 
                 else 
-                    td1.innerHTML = "None"
+                    td1.innerHTML = "Just You"
 
                 var td2 = document.createElement('td')
                 if(result[i].modified) {
@@ -66,6 +66,7 @@ $(document).ready(function() {
                 btn.classList.add('btn-light')
                 btn.setAttribute('data-toggle', 'modal')
                 btn.setAttribute('data-target', '#exampleModal')
+                btn.innerHTML="..."
                 if(result[i].projectid)
                     btn.setAttribute('id', result[i].projectid)
 
