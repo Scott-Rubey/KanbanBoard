@@ -7,6 +7,14 @@ $projid = $_POST['projectid'];
 $proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['userid']." AND projectid ="."'".$projid."'");         //Gets current user's projects
 $oldName = pg_fetch_result($proj, 'projectname');                                                                                       //Check for userid and proj to avoid duplicate proj names by different users
 
+if(!isset($projname)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'projectid'=>$projid, 'message'=>'project name was not found')); 
+}
+
+if(!isset($projid)) {
+    echo json_encode(array("success"=>false, "duplicate"=>false, 'projectid'=>$projid, 'message'=>'project id was not found')); 
+}
+
 if(strcmp($projname, $oldName) == 0) {                                                                   //Project already exists by the supplied name 
 
     http_response_code(200); 
@@ -14,10 +22,10 @@ if(strcmp($projname, $oldName) == 0) {                                          
 
 } else {
 
-    pg_query($conn, "UPDATE project SET projectname = "."'".$projname."'"." WHERE projectid = ". $projid);
+    pg_query($conn, "UPDATE project SET projectname = '".$projname."' WHERE projectid = ". $projid);
 
-    // $d = date('Y-m-d');
-    // pg_query($conn, "UPDATE project SET modified = ".date("Y-m-d")." WHERE projectid = ". $projid);
+    $d = date('Y-m-d');
+    pg_query($conn, "UPDATE project SET modified = '".strval($d)."' WHERE projectid = ". $projid);
 
 
     if(!empty($collab)) {                                                                              

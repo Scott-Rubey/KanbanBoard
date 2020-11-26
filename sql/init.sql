@@ -15,6 +15,7 @@ FOREIGN KEY (userid) REFERENCES person (userid) ON DELETE CASCADE
 
 CREATE TABLE IF NOT EXISTS task (
     projectid INT NOT NULL, 
+    taskid SERIAL NOT NULL PRIMARY KEY, 
     taskname VARCHAR(50),
     taskdescription VARCHAR(255),
     taskpriority VARCHAR(100) NOT NULL, 

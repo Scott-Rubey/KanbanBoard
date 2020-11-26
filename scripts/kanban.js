@@ -13,7 +13,6 @@ window.onload = function(){
 }
 
 //populate the inProgress column with records from the database
-//for testing purposes only
 function populateInProgress() {
   var inProgress = document.getElementById("inProgress-column");
 
@@ -28,7 +27,6 @@ function populateInProgress() {
 }
 
 //populate the complete column with records from the database
-//for testing purposes only
 function populateComplete() {
   var complete = document.getElementById("complete-column");
 
@@ -42,12 +40,11 @@ function populateComplete() {
   }
 }
 
-//create the DOM element that contains task info once Add Task form has been submitted
-function createTaskBox(index){
+function createTaskBox(projectID){
   var taskBox = document.createElement("div");
 
   taskBox.setAttribute("class", "taskBox");
-  taskBox.setAttribute("id", "taskBox-"+index);
+  taskBox.setAttribute("id", "taskBox-"+projectID);
   taskBox.setAttribute("draggable", "true");
 
   //allow ability to drag/drop task boxes
@@ -82,65 +79,72 @@ exTaskCount = 0;
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
-  //parse the index from the taskbox's unique id
-  var taskId = e.target.id;
-  var split = taskId.split('-');
-  var i = split[1];
+  var taskId = e.target.id.split('-')[1];
+  console.log(taskId)
 
-  //ajax call to index into the database and retrieve the record for the target taskbox that was clicked
-  var urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('=')
+  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  console.log(projectId)
   
   $.ajax({
     type: 'GET', 
-    data: {'id': id[1]},
+    data: {'id': projectId},
     url: '../includes/kanban.php', 
   })
   .done(function(data) {
+    console.log(data)
 
-    if(data != 'false') {
-        var parsed = JSON.parse(data);
-        var result = parsed.tasks;
+    if(data) {
+      var targetTask 
+      var result = JSON.parse(data).tasks
 
-        //capture fields from associated row in DB
-        var taskName = result[i].taskname;
-        var priority = result[i].taskpriority;
-        var dueDate = result[i].enddate;
-        var description = result[i].taskdescription;
-
-        var taskText = document.createTextNode("Task: " + taskName);
-        var priorityText = document.createTextNode("Priority: " + priority);
-        var dueDateText = document.createTextNode("Due date: " + dueDate);
-        var descText = document.createTextNode("Description: " + description);
-
-        //create the modal that will house all of the task info
-        var expandedTask = document.createElement('div');
-        expandedTask.setAttribute('class', 'expandedTask');
-
-        //create close button at top of modal
-        var closeBtn = createCloseBtn();
-        expandedTask.appendChild(closeBtn);
-
-        //create a container for all task info to reside in
-        var container = document.createElement('div');
-        container.setAttribute('id', 'container');
-
-        //insert all task info into container for formattin
-        container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
-
-        //append the container with all task info to the modal
-        expandedTask.appendChild(container);
-
-        //add expanded task modal to the DOM
-        if(exTaskCount === 0){
-          main.appendChild(expandedTask)
-          exTaskCount = 1;
+      for(var i = 0; i < result.length; i++) {
+        if(result[i].taskid == taskId) {
+          targetTask = i
+          break
         }
+      }
 
-        //make it draggable
-        drag(expandedTask);
+      console.log(result[targetTask].taskid)
 
-        e.stopPropagation(); 
+      //capture fields from associated row in DB
+      var taskName = result[targetTask].taskname;
+      var priority = result[targetTask].taskpriority;
+      var dueDate = result[targetTask].enddate;
+      var description = result[targetTask].taskdescription;
+
+      var taskText = document.createTextNode("Task: " + taskName);
+      var priorityText = document.createTextNode("Priority: " + priority);
+      var dueDateText = document.createTextNode("Due date: " + dueDate);
+      var descText = document.createTextNode("Description: " + description);
+
+      //create the modal that will house all of the task info
+      var expandedTask = document.createElement('div');
+      expandedTask.setAttribute('class', 'expandedTask');
+
+      //create close button at top of modal
+      var closeBtn = createCloseBtn();
+      expandedTask.appendChild(closeBtn);
+
+      //create a container for all task info to reside in
+      var container = document.createElement('div');
+      container.setAttribute('id', 'container');
+
+      //insert all task info into container for formattin
+      container = insertTaskInfo(container, taskText, priorityText, dueDateText, descText);
+
+      //append the container with all task info to the modal
+      expandedTask.appendChild(container);
+
+      //add expanded task modal to the DOM
+      if(exTaskCount === 0){
+        main.appendChild(expandedTask)
+        exTaskCount = 1;
+      }
+
+      //make it draggable
+      drag(expandedTask);
+
+      e.stopPropagation(); 
     }
   })
   .fail(function(data) {
@@ -149,13 +153,23 @@ function expandTask(e){
 }
 
 //create close button for expanded task form
-function createCloseBtn() {
+function createCloseBtn(e) {
+
+  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+
+  if(!projectId) {
+    console.log("ProjectID not set for task popup close button")
+  } else {
+    var loc = "http://localhost:8000/kanban.html?id=" + projectId
+    console.log("Link: " + loc)
+  }
+
   var close = document.createElement("input");
 
   close.setAttribute("type", "button");
   close.setAttribute("id", "closeBtn");
   close.setAttribute("value", "x");
-  close.setAttribute("onClick", "window.location.href='kanban.html'");
+  close.setAttribute("onClick", "window.location.href=" + "'" + loc + "'");
 
   return close;
 }
@@ -183,7 +197,6 @@ function handleDragStart(e){
   e.dataTransfer.setData('text/html', this.innerHTML);
 }
 
-//make sure the taskbox doesn't do anything unexpected when dragging it to a different column
 function handleDragOver(e){
   if(e.preventDefault)
     e.preventDefault();
@@ -257,24 +270,32 @@ function handleDragEnd(e) {
 function handleDrop(e) {
   e.stopPropagation();
 
+  var status = "" 
+
   //user may move backlog items to inprogress
-  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this))
+  if (backlogColumn.contains(dragSrcEl) && inProgressColumn.contains(this)) {
     inProgressColumn.appendChild(dragSrcEl);
+    status = 'inProgress';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move inProgress items to Complete
-  else if (
-    inProgressColumn.contains(dragSrcEl) &&
-    completeColumn.contains(this)
-  )
+  else if (inProgressColumn.contains(dragSrcEl) && completeColumn.contains(this)) {
     completeColumn.appendChild(dragSrcEl);
+    status = 'complete';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move items backwards from inProgress to Backlog
-  else if (inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this))
+  else if (inProgressColumn.contains(dragSrcEl) && backlogColumn.contains(this)) {
     backlogColumn.appendChild(dragSrcEl);
+    status = 'backlog';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may move items backwards from complete to inProgress
-  else if (
-    completeColumn.contains(dragSrcEl) &&
-    inProgressColumn.contains(this)
-  )
+  else if (completeColumn.contains(dragSrcEl) && inProgressColumn.contains(this)) {
     inProgressColumn.appendChild(dragSrcEl);
+    status = 'inProgress';
+    updateTaskStatus(dragSrcEl, status)
+  }
   //user may not move tasks by more than one column at a time
   else if (
     (completeColumn.contains(dragSrcEl) && backlogColumn.contains(this)) ||
@@ -290,11 +311,53 @@ function handleDrop(e) {
   return false;
 }
 
+function updateTaskStatus(src, status) {
+
+  // console.log(src.id)
+  // console.log(status)
+  // console.log(taskid)
+
+  var urlString = window.location.search
+  var projectid = urlString.slice(1, urlString.length).split('=')     //Get projectID from query string
+  
+  if(!src) {
+    console.log("Src taskbox not set correctly")
+    return
+  }
+  
+  if(!status) {
+    console.log("Status was not set correctly")
+    return 
+  }
+  
+  var taskid = src.id.split("-")[1]
+
+  if(!projectid) {
+    console.log("ID was not set correctly")
+    return 
+  }
+
+  $.ajax({
+    type: 'POST', 
+    data: {
+      'projectid': projectid[1], 
+      'taskStatus': status,
+      'taskID': taskid
+    }, 
+    url: '../includes/update-task.php' 
+  })
+  .done(function(data) {
+    console.log(data)
+  })
+  .fail(function(data) {
+    console.log(data)
+  })
+}
+
 //ensures there's no more than one 'add task' form on the screen at once
 var count = 0;
 
 //add an editable text-box when Add Task button is clicked
-//count variable is for making sure the user can't open more than one Add Task form at one time
 addTaskBtn.addEventListener("click", function(e){
   if(count === 0)
     main.appendChild(createForm());
@@ -319,7 +382,6 @@ function createForm(e){
     //make form draggable
     drag(newTaskForm);
 
-    //1 task form is open...don't open more than one
     count = 1;
 
     return newTaskForm;
@@ -354,28 +416,24 @@ function addPriorityBox(newTaskForm){
     div.setAttribute("aria-labelledby", "dropdownMenuButton");
     newTaskForm.appendChild(div);
 
-    //dropdown item: high priority
     var high = document.createElement("option");
     high.setAttribute("class", "dropdown-item");
     high.setAttribute("value", "high");
     high.innerHTML += "High Priority";
     priorityBtn.appendChild(high);
 
-    //dropdown item: medium priority
     var medium = document.createElement("option");
     medium.setAttribute("value", "medium");
     medium.setAttribute("class", "dropdown-item");
     medium.innerHTML += "Medium Priority";
     priorityBtn.appendChild(medium);
 
-    //dropdown item: low priority
     var low = document.createElement("option");
     low.setAttribute("value", "low");
     low.setAttribute("class", "dropdown-item");
     low.innerHTML += "Low Priority";
     priorityBtn.appendChild(low); 
 
-    //add the select-box to the Add Task form
     newTaskForm.appendChild(priorityBtn);
     newTaskForm.innerHTML += "<br>";
 
@@ -495,8 +553,6 @@ function drag(form) {
   }
 }
 
-//called each time the screen is refreshed (i.e. everytime a task is added or relocated amongst columns)
-//populates tasks from the DB into their appropriate columns based on 'taskstatus' attribute
 function populateTasks() {
 
   var urlString = window.location.search
@@ -510,42 +566,44 @@ function populateTasks() {
   })
   .done(function(data) {
 
-      if(data != 'false') {
-          var parsed = JSON.parse(data)
-          var result = parsed.tasks
-          var projectName = parsed.projectname
+    //console.log(data)
+    if(data != 'false') {
+        var parsed = JSON.parse(data)
+        var result = parsed.tasks
+        var projectName = parsed.projectname
 
-          document.getElementById('projectName').innerHTML = projectName
+        document.getElementById('projectName').innerHTML = projectName
 
-          var backlog = document.getElementById("backlog-column");
-          var inProgress = document.getElementById("inProgress-column");
-          var complete = document.getElementById("complete-column");
+        var backlog = document.getElementById("backlog-column");
+        var inProgress = document.getElementById("inProgress-column");
+        var complete = document.getElementById("complete-column");
 
-          for (var i = 0; i < result.length; i++) {
-            var taskBox = createTaskBox(i);
-            var taskName = document.createTextNode(
-              "Task name: " + result[i].taskname
-            );
-            var dueDate = document.createTextNode(
-              "Due date: " + result[i].enddate
-            );
-            var description = document.createTextNode(
-              "Description: " + result[i].description
-            );
+        for (var i = 0; i < result.length; i++) {
+          var taskBox = createTaskBox(result[i].taskid);
+          var taskName = document.createTextNode(
+            "Task name: " + result[i].taskname
+          );
+          var dueDate = document.createTextNode(
+            "Due date: " + result[i].enddate
+          );
+          var description = document.createTextNode(
+            "Description: " + result[i].description
+          );
 
-            if(result[i].taskstatus == 'backlog') {
-              textToTaskBox(taskBox, taskName, dueDate, backlog, description);
-              backlog.appendChild(taskBox)  
-            }
-            else if (result[i].taskstatus == 'inProgress') {
-              textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
-              inProgress.appendChild(taskBox)  
-            }
-            else {
-              textToTaskBox(taskBox, taskName, dueDate, complete, description);
-            }
+          if(result[i].taskstatus == 'backlog') {
+            textToTaskBox(taskBox, taskName, dueDate, backlog, description);
+            backlog.appendChild(taskBox)  
           }
-          //console.log(data)
+          else if (result[i].taskstatus == 'inProgress') {
+            textToTaskBox(taskBox, taskName, dueDate, inProgress, description);
+            inProgress.appendChild(taskBox)  
+          }
+          else if (result[i].taskstatus == 'complete')  {
+            textToTaskBox(taskBox, taskName, dueDate, complete, description);
+            complete.appendChild(taskBox)
+          }
+        }
+        //console.log(data)
       }
   })
   .fail(function(data) {
@@ -594,7 +652,7 @@ $.ajax({
 
 // export functions for unit testing
 if (typeof module != "undefined") {
-  //module.exports.populateBacklog = populateBacklog;
+  module.exports.populateBacklog = populateBacklog;
   module.exports.populateInProgress = populateInProgress;
   module.exports.populateComplete = populateComplete;
   module.exports.createTaskBox = createTaskBox;

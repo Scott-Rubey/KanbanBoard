@@ -1,7 +1,7 @@
 <?php include('config.php');        
 
 $projid = $_GET['id'];
-if($projid) {
+if(isset($projid)) {
     $_SESSION['currentproject'] = $projid;
     $q1 = pg_query($conn, 'SELECT projectname FROM project WHERE projectid = '.$projid); 
 }
