@@ -446,6 +446,7 @@ function addDueDate(newTaskForm){
   var dueDateBox = document.createElement("input");
   dueDateBox.setAttribute("id", "dueDateBox");
   dueDateBox.setAttribute("type", "date");
+  dueDateBox.setAttribute("required", true);
 
   //add to form
   newTaskForm.appendChild(dueDateBox);
