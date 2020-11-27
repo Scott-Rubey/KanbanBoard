@@ -3,7 +3,6 @@
  in the init code below. 
 */
 document.body.innerHTML =
-document.body.innerHTML =
 `<div>
 <span id="backlog-column"/>
 <button id="addTask">

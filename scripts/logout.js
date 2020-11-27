@@ -4,3 +4,8 @@ function signOut() {
         console.log('User signed out.');
     }
 )}
+
+// export functions for unit testing
+if (typeof module != "undefined") {
+    module.exports.signOut = signOut;
+  }

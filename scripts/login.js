@@ -24,3 +24,8 @@ function onSignIn(googleUser) {
     })
     
 }
+
+// export functions for unit testing
+if (typeof module != "undefined") {
+    module.exports.onSignIn = onSignIn;
+  }

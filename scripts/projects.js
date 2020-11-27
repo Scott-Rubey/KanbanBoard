@@ -146,8 +146,12 @@ $(document).ready(function() {
 
             //console.log(result[0]);
 
-            $("#stats_text").append(`<small class="text-muted">Our users have created over </small>${result[0].stat_count} <br/>
-            <small class="text-muted">projects with over </small>${result[1].stat_count} 
+            $("#stats_text").append(`
+            <small class="text-muted">Our users have created over </small>
+            ${result[0].stat_count} 
+            <br/>
+            <small class="text-muted">projects with over </small>
+            ${result[1].stat_count} 
             <small class="text-muted">tasks</small>`)
 
         } 
