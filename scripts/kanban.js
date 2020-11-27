@@ -40,11 +40,13 @@ function populateComplete() {
   }
 }
 
-function createTaskBox(projectID){
+//Dynamically allocates div to hold task in kanban column
+//Accepts taskID from php to set ID of the task box being created
+function createTaskBox(taskID){
   var taskBox = document.createElement("div");
 
   taskBox.setAttribute("class", "taskBox");
-  taskBox.setAttribute("id", "taskBox-"+projectID);
+  taskBox.setAttribute("id", "taskBox-"+taskID);
   taskBox.setAttribute("draggable", "true");
 
   //allow ability to drag/drop task boxes
@@ -79,11 +81,23 @@ exTaskCount = 0;
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
+  //Gets task id from dynamically created task box
+  //Task ID is used to query the server to get the appropriate information for the pop up 
   var taskId = e.target.id.split('-')[1];
   console.log(taskId)
 
+  //Project ID taken from query string
+  //Used for validation by php 
   var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
   console.log(projectId)
+
+  if(!taskId) {
+    console.log("TaskID was not properly set -- Line 89")
+  }
+
+  if(!projectId) {
+    console.log("ProjectID was not properly set -- Line 93")
+  }
   
   $.ajax({
     type: 'GET', 
@@ -94,7 +108,10 @@ function expandTask(e){
     console.log(data)
 
     if(data) {
-      var targetTask 
+      //targetTask is used to find compare the ID of the task box clicked with all of the
+      //tasks associated with the project. Only the match will be used to fill the details
+      //in the pop up 
+      var targetTask        
       var result = JSON.parse(data).tasks
 
       for(var i = 0; i < result.length; i++) {
@@ -112,6 +129,7 @@ function expandTask(e){
       var dueDate = result[targetTask].enddate;
       var description = result[targetTask].taskdescription;
 
+      //Set fields for taskbox 
       var taskText = document.createTextNode("Task: " + taskName);
       var priorityText = document.createTextNode("Priority: " + priority);
       var dueDateText = document.createTextNode("Due date: " + dueDate);
@@ -267,6 +285,7 @@ function handleDragEnd(e) {
 }
 
 //drops the task box in the appropriate column
+//pass the status of the new column to updateTaskStatus to update in DB 
 function handleDrop(e) {
   e.stopPropagation();
 
@@ -552,12 +571,16 @@ function drag(form) {
     document.onmousemove = null;
   }
 }
-
+//Populate tasks for each column on the kanban board
+//Takes ID from query string and uses GET with php file to retrieve all tasks for projectID
 function populateTasks() {
 
   var urlString = window.location.search
   var id = urlString.slice(1, urlString.length).split('=')
   
+  if(!id) { 
+    console.log("Project ID is not in query string -- Line 562")
+  }
 
   $.ajax({
       type: 'GET', 
@@ -569,6 +592,11 @@ function populateTasks() {
     //console.log(data)
     if(data != 'false') {
         var parsed = JSON.parse(data)
+
+        if(!parsed) {
+          console.log("Data could not be parsed -- Line 577")
+        }
+
         var result = parsed.tasks
         var projectName = parsed.projectname
 
@@ -613,14 +641,30 @@ function populateTasks() {
 
 $('body').on('submit', 'form', function(e) {
 
+e.preventDefault()
 var urlString = window.location.search
 var id = urlString.slice(1, urlString.length).split('=')
 
-e.preventDefault()
 var priority = document.getElementById('priorityBtn')
 var taskName = $('#newTaskBox').val()
 var taskDescription = $('#description').val()
 var endDate = $('#dueDateBox').val()
+
+if(!id) { 
+  console.log("Project ID is not in query string -- Line 626")
+}
+
+if(!taskName) { 
+  console.log("TaskName field not set -- Line 630")
+}
+
+if(!taskDescription) { 
+  console.log("TaskDescription not set -- Line 634")
+}
+
+if(!endDate) { 
+  console.log("EndDate field not set -- Line 638")
+}
 
 var formData= {
   taskname: taskName,
@@ -637,7 +681,7 @@ $.ajax({
 })
 .done(function(data) {
     var data = JSON.parse(data)
-    console.log(data)
+    //console.log(data)
     if(data.success) {
         if(data.duplicate == true) {
             alert("You already have a task by that name.")
