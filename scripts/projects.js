@@ -112,8 +112,10 @@ $(document).ready(function() {
                     
                 })
 
+                //Delete project button for modal on project.html
                 $('#deleteProject').on('click', function() {
                     
+                    //Pull project ID from modal pop up 
                     var formData = {
                         'projectid': projectId
                     }
@@ -124,6 +126,7 @@ $(document).ready(function() {
                         data: formData
                     })
                     .done(function(data) {
+                        //Parse data to check return status & message
                         if(data) {
                             result = JSON.parse(data)
                         }
