@@ -132,5 +132,29 @@ $(document).ready(function() {
     .fail(function(data) {
         console.log('Projects could not be retrieved')
     })
+
+
+    $.ajax({
+        type: 'GET', 
+        url: '../includes/appstats.php', 
+    })
+    .done(function(data) {
+
+        if(data) {
+
+            var result = JSON.parse(data);
+
+            //console.log(result[0]);
+
+            $("#stats_text").append(`<small class="text-muted">Our users have created over </small>${result[0].stat_count} <br/>
+            <small class="text-muted">projects with over </small>${result[1].stat_count} 
+            <small class="text-muted">tasks</small>`)
+
+        } 
+
+    })
+    .fail(function(data) {
+        console.log('Stats could not be retrieved')
+    })
 })
 
