@@ -40,11 +40,13 @@ function populateComplete() {
   }
 }
 
-function createTaskBox(projectID){
+//Dynamically allocates div to hold task in kanban column
+//Accepts taskID from php to set ID of the task box being created
+function createTaskBox(taskID){
   var taskBox = document.createElement("div");
 
   taskBox.setAttribute("class", "taskBox");
-  taskBox.setAttribute("id", "taskBox-"+projectID);
+  taskBox.setAttribute("id", "taskBox-"+taskID);
   taskBox.setAttribute("draggable", "true");
 
   //allow ability to drag/drop task boxes
@@ -79,11 +81,23 @@ exTaskCount = 0;
 
 //create larger taskbox on double click so user can view all fields
 function expandTask(e){
+  //Gets task id from dynamically created task box
+  //Task ID is used to query the server to get the appropriate information for the pop up 
   var taskId = e.target.id.split('-')[1];
   console.log(taskId)
 
+  //Project ID taken from query string
+  //Used for validation by php 
   var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
   console.log(projectId)
+
+  if(!taskId) {
+    console.log("TaskID was not properly set -- Line 89")
+  }
+
+  if(!projectId) {
+    console.log("ProjectID was not properly set -- Line 93")
+  }
   
   $.ajax({
     type: 'GET', 
@@ -94,7 +108,10 @@ function expandTask(e){
     console.log(data)
 
     if(data) {
-      var targetTask 
+      //targetTask is used to find compare the ID of the task box clicked with all of the
+      //tasks associated with the project. Only the match will be used to fill the details
+      //in the pop up 
+      var targetTask        
       var result = JSON.parse(data).tasks
 
       for(var i = 0; i < result.length; i++) {
@@ -112,6 +129,7 @@ function expandTask(e){
       var dueDate = result[targetTask].enddate;
       var description = result[targetTask].taskdescription;
 
+      //Set fields for taskbox 
       var taskText = document.createTextNode("Task: " + taskName);
       var priorityText = document.createTextNode("Priority: " + priority);
       var dueDateText = document.createTextNode("Due date: " + dueDate);
@@ -121,9 +139,14 @@ function expandTask(e){
       var expandedTask = document.createElement('div');
       expandedTask.setAttribute('class', 'expandedTask');
 
+      
       //create close button at top of modal
       var closeBtn = createCloseBtn();
       expandedTask.appendChild(closeBtn);
+      
+      //Create a delete task button 
+      var deleteBtn = createDeleteBtn(result[targetTask].taskid);
+      expandedTask.appendChild(deleteBtn);
 
       //create a container for all task info to reside in
       var container = document.createElement('div');
@@ -152,9 +175,68 @@ function expandTask(e){
   })  
 }
 
+//Create delete button for expanded task form 
+//Takes taskID from expandedTask function
+function createDeleteBtn(taskid) {
+
+  //Get projectID so close button references ID in query string upon refresh 
+  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  var taskID = taskid
+
+  if(!projectId) {
+    console.log("ProjectID not set for task popup delete button")
+  } else {
+    var loc = "http://localhost:8000/kanban.html?id=" + projectId
+    console.log("Link: " + loc)
+  }
+
+  console.log(taskID)
+
+  var del = document.createElement("input");
+
+  del.setAttribute("type", "button");
+  del.setAttribute("class", "deleteBtn");
+  del.setAttribute("id", taskID);
+  del.setAttribute("value", "X");
+  del.setAttribute("title", "Delete Task");
+  //del.setAttribute("onClick", deleteTask(taskID));
+
+  return del;
+}
+
+$('body').on('click', '.deleteBtn', function() {
+  
+  var taskID = this.id 
+
+  formData = {
+    'taskid': taskID
+  }
+
+  $.ajax({
+    type: 'POST', 
+    url: '../includes/delete-task.php', 
+    data: formData,
+  })
+  .done(function(data) {
+      if(data) {
+        var result = JSON.parse(data)
+      }
+      if(result.success) {
+        alert(result.message)
+        window.location.href = window.location.href
+      } else {
+        alert('contact TJ he messed something up for deleting task')
+      }
+  })
+  .fail(function(data) {
+      console.log(data)
+  })
+})
+
 //create close button for expanded task form
 function createCloseBtn(e) {
 
+  //Get projectID so close button references ID in query string upon refresh 
   var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
 
   if(!projectId) {
@@ -267,6 +349,7 @@ function handleDragEnd(e) {
 }
 
 //drops the task box in the appropriate column
+//pass the status of the new column to updateTaskStatus to update in DB 
 function handleDrop(e) {
   e.stopPropagation();
 
@@ -311,6 +394,10 @@ function handleDrop(e) {
   return false;
 }
 
+//Function to update task status on server upon task drop in new column
+//Takes projectID from query string and taskID from the taskBox that was clicked
+//src: the task box that was clicked, ID set upon dynamic creation in this file
+//status: column name where the task box was dropped, taken from handleDrop() function above
 function updateTaskStatus(src, status) {
 
   // console.log(src.id)
@@ -553,12 +640,16 @@ function drag(form) {
     document.onmousemove = null;
   }
 }
-
+//Populate tasks for each column on the kanban board
+//Takes ID from query string and uses GET with php file to retrieve all tasks for projectID
 function populateTasks() {
 
   var urlString = window.location.search
   var id = urlString.slice(1, urlString.length).split('=')
   
+  if(!id) { 
+    console.log("Project ID is not in query string -- Line 562")
+  }
 
   $.ajax({
       type: 'GET', 
@@ -570,6 +661,11 @@ function populateTasks() {
     //console.log(data)
     if(data != 'false') {
         var parsed = JSON.parse(data)
+
+        if(!parsed) {
+          console.log("Data could not be parsed -- Line 577")
+        }
+
         var result = parsed.tasks
         var projectName = parsed.projectname
 
@@ -614,41 +710,57 @@ function populateTasks() {
 
 $('body').on('submit', 'form', function(e) {
 
-var urlString = window.location.search
-var id = urlString.slice(1, urlString.length).split('=')
+  e.preventDefault()
+  var urlString = window.location.search
+  var id = urlString.slice(1, urlString.length).split('=')
 
-e.preventDefault()
-var priority = document.getElementById('priorityBtn')
-var taskName = $('#newTaskBox').val()
-var taskDescription = $('#description').val()
-var endDate = $('#dueDateBox').val()
+  var priority = document.getElementById('priorityBtn')
+  var taskName = $('#newTaskBox').val()
+  var taskDescription = $('#description').val()
+  var endDate = $('#dueDateBox').val()
 
-var formData= {
-  taskname: taskName,
-  taskdescription: taskDescription,
-  taskpriority: priority.options[priority.selectedIndex].text,
-  taskstatus: "backlog", //Setting as default status for now, will change if user is allowed to choose status
-  enddate: endDate,
-}
+  if(!id) { 
+    console.log("Project ID is not in query string -- Line 626")
+  }
 
-$.ajax({
-  type: 'POST', 
-  url: '../includes/new-task.php', 
-  data: formData,
-})
-.done(function(data) {
-    var data = JSON.parse(data)
+  if(!taskName) { 
+    console.log("TaskName field not set -- Line 630")
+  }
+
+  if(!taskDescription) { 
+    console.log("TaskDescription not set -- Line 634")
+  }
+
+  if(!endDate) { 
+    console.log("EndDate field not set -- Line 638")
+  }
+
+  var formData= {
+    taskname: taskName,
+    taskdescription: taskDescription,
+    taskpriority: priority.options[priority.selectedIndex].text,
+    taskstatus: "backlog", //Setting as default status for now, will change if user is allowed to choose status
+    enddate: endDate,
+  }
+
+  $.ajax({
+    type: 'POST', 
+    url: '../includes/new-task.php', 
+    data: formData,
+  })
+  .done(function(data) {
+      var data = JSON.parse(data)
+      //console.log(data)
+      if(data.success) {
+          if(data.duplicate == true) {
+              alert("You already have a task by that name.")
+          } 
+          window.location.href = "http://localhost:8000/kanban.html?id=" + id[1]
+      }
+  })
+  .fail(function(data) {
     console.log(data)
-    if(data.success) {
-        if(data.duplicate == true) {
-            alert("You already have a task by that name.")
-        } 
-        window.location.href = "http://localhost:8000/kanban.html?id=" + id[1]
-    }
-})
-.fail(function(data) {
-  console.log(data)
-})
+  })
 })
 
 // export functions for unit testing

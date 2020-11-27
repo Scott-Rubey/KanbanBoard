@@ -122,6 +122,37 @@ $(document).ready(function() {
                     
                 })
 
+                //Delete project button for modal on project.html
+                $('#deleteProject').on('click', function() {
+                    
+                    //Pull project ID from modal pop up 
+                    var formData = {
+                        'projectid': projectId
+                    }
+
+                    $.ajax({
+                        type: 'POST', 
+                        url: '../includes/delete-project.php',
+                        data: formData
+                    })
+                    .done(function(data) {
+                        //Parse data to check return status & message
+                        if(data) {
+                            result = JSON.parse(data)
+                        }
+                        if(result.success) {
+                            alert(result.message)
+                            window.location.href = window.location.href
+                        }
+                        else {
+                            alert("contact TJ since he messed everything up")
+                        }
+                    })
+                    .fail(function(data) {
+                        console.log(data) 
+                    })
+                })
+
             })
         } else {
             document.getElementById('list-header').style.display = 'none'
