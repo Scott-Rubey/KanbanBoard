@@ -10,7 +10,7 @@ $(document).ready(function() {
 
             var result = JSON.parse(data)
 
-            //console.log(data)
+            console.log(data)
 
             if(result.length > 0) {
                 document.getElementById('projects-CTA').style.display = 'none'

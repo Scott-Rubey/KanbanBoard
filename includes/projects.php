@@ -3,7 +3,7 @@
 $q0 = pg_query($conn, "SELECT projectid FROM collaborators WHERE userid=".$_SESSION['userid']);             //ProjectID array from collab
 $res = pg_fetch_all($q0);
 
-$q1 = pg_query("SELECT P.projectid AS projectid, ".
+$q5 = pg_query("SELECT P.projectid AS projectid, ".
 "P.projectname AS projectname, ".
 "P.modified AS modified, ".
 "coalesce(max(T2.taskcount), 0) AS taskcount ".
@@ -16,7 +16,22 @@ $q1 = pg_query("SELECT P.projectid AS projectid, ".
 "ON T2.projectid = P.projectid ".
 "WHERE P.userid = ". $_SESSION['userid'] .
 "GROUP BY P.projectid");   //User's projects
+$res5 = pg_fetch_all($q5);
+
+$q1 = pg_query('SELECT projectid, projectname, modified FROM project WHERE userid ='.$_SESSION['userid']);   //User's projects
 $res2 = pg_fetch_all($q1);
+
+for($x = 0; $x < count($res5); $x++) {
+    $taskcount = $res5[$x]['taskcount'];
+    $projid = $res5[$x]['projectid'];
+    $projnum = 0;
+    for($i = 0; $i < count($res2); $i++) {
+        if($res2[$i]['projectid'] == $projid) {
+            $projnum = $i; 
+        }
+    }
+    $res2[$projnum]['taskcount'] = $taskcount;
+}
 
 $q3 = pg_query($conn, "SELECT alias FROM person WHERE userid=".$_SESSION['userid']);                        //Get current user's name
 $curUserName = pg_fetch_result($q3, 0, 'alias');
