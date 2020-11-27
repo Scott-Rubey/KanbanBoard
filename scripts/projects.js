@@ -34,7 +34,7 @@ $(document).ready(function() {
                 if(result[i].projectid)
                     a.href = 'http://localhost:8000/kanban.html?id=' + result[i].projectid
                 else
-                a.href = 'http://localhost:8000/kanban.html'
+                    a.href = 'http://localhost:8000/kanban.html'
                 th.appendChild(a)
 
                 var td1 = document.createElement('td')
@@ -110,6 +110,34 @@ $(document).ready(function() {
                         console.log(data)
                     })
                     
+                })
+
+                $('#deleteProject').on('click', function() {
+                    
+                    var formData = {
+                        'projectid': projectId
+                    }
+
+                    $.ajax({
+                        type: 'POST', 
+                        url: '../includes/delete-project.php',
+                        data: formData
+                    })
+                    .done(function(data) {
+                        if(data) {
+                            result = JSON.parse(data)
+                        }
+                        if(result.success) {
+                            alert(result.message)
+                            window.location.href = window.location.href
+                        }
+                        else {
+                            alert("contact TJ since he messed everything up")
+                        }
+                    })
+                    .fail(function(data) {
+                        console.log(data) 
+                    })
                 })
 
             })
