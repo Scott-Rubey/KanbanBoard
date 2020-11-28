@@ -32,9 +32,9 @@ $(document).ready(function() {
                     label.innerHTML = "N/A"
                 a.appendChild(label)
                 if(result[i].projectid)
-                    a.href = 'kanban.html?id=' + result[i].projectid
+                    a.href = '/kanban.html?id=' + result[i].projectid
                 else
-                    a.href = 'kanban.html'
+                    a.href = '/kanban.html'
                 // Include task badge
                 var spanclassattr = "badge ml-2 ";
                 if(result[i].taskcount < 3)

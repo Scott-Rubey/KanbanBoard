@@ -14,7 +14,7 @@ function onSignIn(googleUser) {
         }, 
         success: function(data) {
             console.log(data)
-            window.location.href = "http://localhost:8000/projects.html"            //Go to user's projects page
+            window.location.href = "/projects.html"            //Go to user's projects page
         },
         error: function(data) {
             console.log(data)

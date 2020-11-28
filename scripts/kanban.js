@@ -242,7 +242,7 @@ function createCloseBtn(e) {
   if(!projectId) {
     console.log("ProjectID not set for task popup close button")
   } else {
-    var loc = "http://localhost:8000/kanban.html?id=" + projectId
+    var loc = "/kanban.html?id=" + projectId
     console.log("Link: " + loc)
   }
 
@@ -558,6 +558,10 @@ function addDescriptionBox(newTaskForm){
 }
 
 function addButtons(newTaskForm){
+
+    var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+    var loc = "/kanban.html?id=" + projectId
+
     //create submit button
     var submit = document.createElement("input");
     submit.setAttribute("type", "submit");
@@ -571,7 +575,7 @@ function addButtons(newTaskForm){
     reset.setAttribute("id", "resetBtn");
     reset.setAttribute("value", "Cancel");
     reset.setAttribute("class", "button form");
-    reset.setAttribute("onClick", "window.location.href='kanban.html'");
+    reset.setAttribute("onClick", "window.location.href=" + "'" + loc + "'");
 
     //add to form
     newTaskForm.appendChild(reset);
@@ -755,7 +759,7 @@ $('body').on('submit', 'form', function(e) {
           if(data.duplicate == true) {
               alert("You already have a task by that name.")
           } 
-          window.location.href = "http://localhost:8000/kanban.html?id=" + id[1]
+          window.location.href = "/kanban.html?id=" + id[1]
       }
   })
   .fail(function(data) {
