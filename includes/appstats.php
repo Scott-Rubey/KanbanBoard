@@ -8,7 +8,7 @@ include('config.php');                                                          
 */
 
 $q0 = pg_query($conn, "SELECT GREATEST(COUNT(*)-1,0) as stat_count FROM project ".
-" UNION " .
+" UNION ALL " .
 "SELECT GREATEST(COUNT(*) -1,0) as stat_count FROM task");             
 $res = pg_fetch_all($q0);
 
