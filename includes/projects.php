@@ -21,16 +21,18 @@ $res5 = pg_fetch_all($q5);
 $q1 = pg_query('SELECT projectid, projectname, modified FROM project WHERE userid ='.$_SESSION['userid']);   //User's projects
 $res2 = pg_fetch_all($q1);
 
-for($x = 0; $x < count($res5); $x++) {
-    $taskcount = $res5[$x]['taskcount'];
-    $projid = $res5[$x]['projectid'];
-    $projnum = 0;
-    for($i = 0; $i < count($res2); $i++) {
-        if($res2[$i]['projectid'] == $projid) {
-            $projnum = $i; 
+if($res5) {
+    for($x = 0; $x < count($res5); $x++) {
+        $taskcount = $res5[$x]['taskcount'];
+        $projid = $res5[$x]['projectid'];
+        $projnum = 0;
+        for($i = 0; $i < count($res2); $i++) {
+            if($res2[$i]['projectid'] == $projid) {
+                $projnum = $i; 
+            }
         }
+        $res2[$projnum]['taskcount'] = $taskcount;
     }
-    $res2[$projnum]['taskcount'] = $taskcount;
 }
 
 $q3 = pg_query($conn, "SELECT alias FROM person WHERE userid=".$_SESSION['userid']);                        //Get current user's name

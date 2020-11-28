@@ -4,7 +4,11 @@ $projname = $_POST['projectname'];
 $collab = json_decode($_POST['collaborators']);
 
 if(!isset($projname)) {
-    echo json_encode(array("success"=>false, "duplicate"=>false, 'message'=>'project name was not provided correctly')); 
+    echo json_encode(array(
+        "success"=>false, 
+        "duplicate"=>false, 
+        'message'=>'project name was not provided correctly'
+    )); 
 }
 
 $proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['userid']." AND projectname ="."'".$projname."'");         //Gets current user's projects
@@ -14,7 +18,10 @@ if($res != "") {        //Project already exists by the supplied name
 
     $_SESSION['currentproject'] = pg_fetch_result($proj, 'projectid');             //Set current project id to duplicate
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>true)); 
+    echo json_encode(array(
+        "success"=>true, 
+        "duplicate"=>true
+    )); 
 
 } else {
 
@@ -67,7 +74,11 @@ if($res != "") {        //Project already exists by the supplied name
     }
     
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>false, 'projectid'=>$projid)); 
+    echo json_encode(array(
+        "success"=>true, 
+        "duplicate"=>false, 
+        'projectid'=>$projid
+    )); 
 
 }
 ?>

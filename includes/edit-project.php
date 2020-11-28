@@ -8,17 +8,30 @@ $proj = pg_query($conn, "SELECT * FROM project WHERE userid = ".$_SESSION['useri
 $oldName = pg_fetch_result($proj, 'projectname');                                                                                       //Check for userid and proj to avoid duplicate proj names by different users
 
 if(!isset($projname)) {
-    echo json_encode(array("success"=>false, "duplicate"=>false, 'projectid'=>$projid, 'message'=>'project name was not found')); 
+    echo json_encode(array(
+        "success"=>false, 
+        "duplicate"=>false, 
+        'projectid'=>$projid, 
+        'message'=>'project name was not found'
+    )); 
 }
 
 if(!isset($projid)) {
-    echo json_encode(array("success"=>false, "duplicate"=>false, 'projectid'=>$projid, 'message'=>'project id was not found')); 
+    echo json_encode(array(
+        "success"=>false, 
+        "duplicate"=>false, 
+        'projectid'=>$projid, 
+        'message'=>'project id was not found'
+    )); 
 }
 
 if(strcmp($projname, $oldName) == 0) {                                                                   //Project already exists by the supplied name 
 
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>true)); 
+    echo json_encode(array(
+        "success"=>true, 
+        "duplicate"=>true
+    )); 
 
 } else {
 
@@ -58,7 +71,11 @@ if(strcmp($projname, $oldName) == 0) {                                          
     }
     
     http_response_code(200); 
-    echo json_encode(array("success"=>true, "duplicate"=>false, 'projectid'=>$projid)); 
+    echo json_encode(array(
+        "success"=>true, 
+        "duplicate"=>false, 
+        'projectid'=>$projid
+    )); 
 
 }
 ?>

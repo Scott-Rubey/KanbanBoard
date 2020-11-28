@@ -8,76 +8,84 @@ $(document).ready(function() {
 
         if(data) {
 
+            //console.log(data)
+
             var result = JSON.parse(data)
 
-            console.log(data)
+            //console.log(data)
 
             if(result.length > 0) {
                 document.getElementById('projects-CTA').style.display = 'none'
+            } else {
+                document.getElementById('list-header').style.display = 'none'
+                document.getElementById('list-items').style.display = 'none'
             }
 
-            for(var i = 0; i < result.length; i++) {
+            if(result.length > 0) {
 
-                var tbody = document.getElementById('tprojects')
+                for(var i = 0; i < result.length; i++) {
 
-                var tr = document.createElement('tr')
+                    var tbody = document.getElementById('tprojects')
 
-                var th = document.createElement('th') 
-                th.setAttribute('scope', 'row')
-                var a = document.createElement('a')
-                var label = document.createElement('label')
-                if(result[i].projectname) 
-                    label.innerHTML = result[i].projectname
-                else 
-                    label.innerHTML = "N/A"
-                a.appendChild(label)
-                if(result[i].projectid)
-                    a.href = '/kanban.html?id=' + result[i].projectid
-                else
-                    a.href = '/kanban.html'
-                // Include task badge
-                var spanclassattr = "badge ml-2 ";
-                if(result[i].taskcount < 3)
-                    spanclassattr += "badge-success";
-                else if(result[i].taskcount < 5)
-                    spanclassattr += "badge-warning";
-                else
-                    spanclassattr += "badge-danger";
-                a.innerHTML += `<span class="${spanclassattr}">${result[i].taskcount}</span>`
-                th.appendChild(a)
+                    var tr = document.createElement('tr')
 
-                var td1 = document.createElement('td')
-                if(result[i].collaborators)
-                    td1.innerHTML = result[i].collaborators                     //Add collaborators 
-                else 
-                    td1.innerHTML = "Just You"
+                    var th = document.createElement('th') 
+                    th.setAttribute('scope', 'row')
+                    var a = document.createElement('a')
+                    var label = document.createElement('label')
+                    if(result[i].projectname) 
+                        label.innerHTML = result[i].projectname
+                    else 
+                        label.innerHTML = "N/A"
+                    a.appendChild(label)
+                    if(result[i].projectid)
+                        a.href = '/kanban.html?id=' + result[i].projectid
+                    else
+                        a.href = '/kanban.html'
+                    // Include task badge
+                    var spanclassattr = "badge ml-2 ";
+                    if(result[i].taskcount < 3)
+                        spanclassattr += "badge-success";
+                    else if(result[i].taskcount < 5)
+                        spanclassattr += "badge-warning";
+                    else
+                        spanclassattr += "badge-danger";
+                    a.innerHTML += `<span class="${spanclassattr}">${result[i].taskcount}</span>`
+                    th.appendChild(a)
 
-                var td2 = document.createElement('td')
-                if(result[i].modified) {
-                    var date = result[i].modified.split("-")                        //Split to reformat date from psql                  
-                    td2.innerHTML = date[1] + '/' + date[2] + '/' + date[0]         //Add data modified 
-                } else {
-                    td2.innerHTML = "N/A"         //Add data modified 
+                    var td1 = document.createElement('td')
+                    if(result[i].collaborators)
+                        td1.innerHTML = result[i].collaborators                     //Add collaborators 
+                    else 
+                        td1.innerHTML = "Just You"
+
+                    var td2 = document.createElement('td')
+                    if(result[i].modified) {
+                        var date = result[i].modified.split("-")                        //Split to reformat date from psql                  
+                        td2.innerHTML = date[1] + '/' + date[2] + '/' + date[0]         //Add data modified 
+                    } else {
+                        td2.innerHTML = "N/A"         //Add data modified 
+                    }
+                    var td3 = document.createElement('td')
+
+                    btn = document.createElement('button')
+                    btn.classList.add('btn')
+                    btn.classList.add('btn-light')
+                    btn.setAttribute('data-toggle', 'modal')
+                    btn.setAttribute('data-target', '#exampleModal')
+                    btn.innerHTML="..."
+                    if(result[i].projectid)
+                        btn.setAttribute('id', result[i].projectid)
+
+                    td3.appendChild(btn)
+
+                    tr.appendChild(th)
+                    tr.appendChild(td1)
+                    tr.appendChild(td2)
+                    tr.appendChild(td3)
+                    tbody.appendChild(tr)
+                    
                 }
-                var td3 = document.createElement('td')
-
-                btn = document.createElement('button')
-                btn.classList.add('btn')
-                btn.classList.add('btn-light')
-                btn.setAttribute('data-toggle', 'modal')
-                btn.setAttribute('data-target', '#exampleModal')
-                btn.innerHTML="..."
-                if(result[i].projectid)
-                    btn.setAttribute('id', result[i].projectid)
-
-                td3.appendChild(btn)
-
-                tr.appendChild(th)
-                tr.appendChild(td1)
-                tr.appendChild(td2)
-                tr.appendChild(td3)
-                tbody.appendChild(tr)
-                
             }
 
             $('#list-items').on('click', 'button', function(e) {                //Listener for 'settings' modal 

@@ -30,6 +30,8 @@ if($result == "") {                       //User not located in database via ema
 }
 
 http_response_code(200); 
-echo json_encode(array('success'=>true)); 
+echo json_encode(array(
+  'success'=>true
+)); 
 
 ?>
