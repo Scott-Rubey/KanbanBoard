@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="./scripts/topnav.js"></script>
     <script src="./scripts/logout.js"></script>
     <link
       rel="stylesheet"
@@ -21,14 +22,14 @@
         <li><a href="/convo.html">Convo</a></li>
         <li><a href="/calendar.html">Calendar</a></li>
         <li><a href="/kanban.html">Board</a></li>
-        <li><a href="/projects.html">Projects</a></li>
+        <li><a href="javascript:goToProjects()">Projects</a></li>
       </ul>
 
       <select class="select">
         <option value="" selected="selected"></option>
 
-        <option><a href="/projects.html">Projects</a></option>
-        <option value="/kanban.html">Board</option>
+        <option><a href="javascript:goToProject()">Project</a></option>
+        <!-- <option value="/kanban.html">Board</option> -->
         <option value="/calendar.html">Calendar</option>
         <option value="/convo.html">Convo</option>
         <option value="/index.html" onclick="signOut()">Sign out</option>

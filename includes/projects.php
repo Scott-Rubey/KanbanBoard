@@ -1,6 +1,8 @@
 <?php include('config.php');                                                                                //Array of user's projects
 
-$q0 = pg_query($conn, "SELECT projectid FROM collaborators WHERE userid=".$_SESSION['userid']);             //ProjectID array from collab
+$uid = $_POST['userid'];
+
+$q0 = pg_query($conn, "SELECT projectid FROM collaborators WHERE userid=".$uid);             //ProjectID array from collab
 $res = pg_fetch_all($q0);
 
 $q5 = pg_query("SELECT P.projectid AS projectid, ".
@@ -14,11 +16,11 @@ $q5 = pg_query("SELECT P.projectid AS projectid, ".
 "WHERE T1.taskstatus = 'inProgress' ".
 "GROUP BY T1.projectid) T2 ".
 "ON T2.projectid = P.projectid ".
-"WHERE P.userid = ". $_SESSION['userid'] .
+"WHERE P.userid = ". $uid .
 "GROUP BY P.projectid");   //User's projects
 $res5 = pg_fetch_all($q5);
 
-$q1 = pg_query('SELECT projectid, projectname, modified FROM project WHERE userid ='.$_SESSION['userid']);   //User's projects
+$q1 = pg_query('SELECT projectid, projectname, modified FROM project WHERE userid ='.$uid);   //User's projects
 $res2 = pg_fetch_all($q1);
 
 if($res5) {
@@ -35,7 +37,7 @@ if($res5) {
     }
 }
 
-$q3 = pg_query($conn, "SELECT alias FROM person WHERE userid=".$_SESSION['userid']);                        //Get current user's name
+$q3 = pg_query($conn, "SELECT alias FROM person WHERE userid=".$uid);                        //Get current user's name
 $curUserName = pg_fetch_result($q3, 0, 'alias');
 
 if(!$curUserName) 

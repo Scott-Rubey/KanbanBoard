@@ -1,24 +1,28 @@
-$(document).ready(function() {
+$(window).on('load', function() {
+
+    var uid = window.location.search.slice(1, window.location.search.length).split('=')[1]
+    console.log(uid)
 
     $.ajax({
-        type: 'GET', 
+        type: 'POST', 
+        data: {
+            'userid': uid
+        },
         url: '../includes/projects.php', 
     })
     .done(function(data) {
 
+        console.log("Loading projects")
+
         if(data) {
 
-            //console.log(data)
+            console.log("Have data")
+            console.log(data)
 
             var result = JSON.parse(data)
 
-            //console.log(data)
-
             if(result.length > 0) {
                 document.getElementById('projects-CTA').style.display = 'none'
-            } else {
-                document.getElementById('list-header').style.display = 'none'
-                document.getElementById('list-items').style.display = 'none'
             }
 
             if(result.length > 0) {
@@ -39,7 +43,7 @@ $(document).ready(function() {
                         label.innerHTML = "N/A"
                     a.appendChild(label)
                     if(result[i].projectid)
-                        a.href = '/kanban.html?id=' + result[i].projectid
+                        a.href = '/kanban.html?id=' + result[i].projectid + "&uid=" + uid
                     else
                         a.href = '/kanban.html'
                     // Include task badge
@@ -87,82 +91,9 @@ $(document).ready(function() {
                     
                 }
             }
-
-            $('#list-items').on('click', 'button', function(e) {                //Listener for 'settings' modal 
-
-                var projectId = this.id
-                
-                $('#saveChanges').on('click', function() {
-                    var newProjName = $('#newProjectName').val()
-                    var newCollab = $('#newCollabs').val()
-
-                    if(newCollab) {
-                        newCollab = newCollab.split(";")
-                        for(var i = 0; i < newCollab.length; i++)
-                            newCollab[i] = newCollab[i].trim() 
-                    }
-                
-                    var formData= {
-                        'newprojectname': newProjName,
-                        'collaborators': JSON.stringify(newCollab),
-                        'projectid': projectId
-                    }
-
-                    $.ajax({
-                        type: 'POST', 
-                        url: '../includes/edit-project.php', 
-                        data: formData,
-                    })
-                    .done(function(data) {
-                        console.log(data)
-                        var data = JSON.parse(data)
-                        if(data.success) {
-                            if(data.duplicate == true) {
-                                alert("This project already has that name! Try using a new name.")
-                            } else {
-                                location.reload()
-                            }
-                        }
-                    })
-                    .fail(function(data) {
-                        console.log(data)
-                    })
-                    
-                })
-
-                //Delete project button for modal on project.html
-                $('#deleteProject').on('click', function() {
-                    
-                    //Pull project ID from modal pop up 
-                    var formData = {
-                        'projectid': projectId
-                    }
-
-                    $.ajax({
-                        type: 'POST', 
-                        url: '../includes/delete-project.php',
-                        data: formData
-                    })
-                    .done(function(data) {
-                        //Parse data to check return status & message
-                        if(data) {
-                            result = JSON.parse(data)
-                        }
-                        if(result.success) {
-                            alert(result.message)
-                            window.location.href = window.location.href
-                        }
-                        else {
-                            alert("contact TJ since he messed everything up")
-                        }
-                    })
-                    .fail(function(data) {
-                        console.log(data) 
-                    })
-                })
-
-            })
+            
         } else {
+            console.log("No data")
             document.getElementById('list-header').style.display = 'none'
             document.getElementById('list-items').style.display = 'none'
         }
@@ -170,6 +101,80 @@ $(document).ready(function() {
     })
     .fail(function(data) {
         console.log('Projects could not be retrieved')
+    })
+
+    $('#list-items').on('click', 'button', function(e) {                //Listener for 'settings' modal 
+
+        var projectId = this.id
+        
+        $('#saveChanges').on('click', function() {
+            var newProjName = $('#newProjectName').val()
+            var newCollab = $('#newCollabs').val()
+
+            if(newCollab) {
+                newCollab = newCollab.split(";")
+                for(var i = 0; i < newCollab.length; i++)
+                    newCollab[i] = newCollab[i].trim() 
+            }
+        
+            var formData= {
+                'newprojectname': newProjName,
+                'collaborators': JSON.stringify(newCollab),
+                'projectid': projectId
+            }
+
+            $.ajax({
+                type: 'POST', 
+                url: '../includes/edit-project.php', 
+                data: formData,
+            })
+            .done(function(data) {
+                console.log(data)
+                var data = JSON.parse(data)
+                if(data.success) {
+                    if(data.duplicate == true) {
+                        alert("This project already has that name! Try using a new name.")
+                    } else {
+                        location.reload()
+                    }
+                }
+            })
+            .fail(function(data) {
+                console.log(data)
+            })
+            
+        })
+
+            //Delete project button for modal on project.html
+        $('#deleteProject').on('click', function(e) {
+            
+            //Pull project ID from modal pop up 
+            var formData = {
+                'projectid': projectId
+            }
+
+            $.ajax({
+                type: 'POST', 
+                url: '../includes/delete-project.php',
+                data: formData
+            })
+            .done(function(data) {
+                //Parse data to check return status & message
+                if(data) {
+                    result = JSON.parse(data)
+                }
+                if(result.success) {
+                    alert(result.message)
+                    window.location.href = window.location.href
+                }
+                else {
+                    alert("contact TJ since he messed everything up")
+                }
+            })
+            .fail(function(data) {
+                console.log(data) 
+            })
+        })
     })
 
 
@@ -181,17 +186,22 @@ $(document).ready(function() {
 
         if(data) {
 
-            var result = JSON.parse(data);
-
+            if(data) {
+                var result = JSON.parse(data);
+            }
             //console.log(result[0]);
 
-            $("#stats_text").append(`
-            <small class="text-muted">Our users have created over </small>
-            ${result[0].stat_count} 
-            <br/>
-            <small class="text-muted">projects with over </small>
-            ${result[1].stat_count} 
-            <small class="text-muted">tasks</small>`)
+            if(result) {
+                if(result.length > 0) {
+                    $("#stats_text").append(`
+                    <small class="text-muted">Our users have created over </small>
+                    ${result[0].stat_count} 
+                    <br/>
+                    <small class="text-muted">projects with over </small>
+                    ${result[1].stat_count} 
+                    <small class="text-muted">tasks</small>`)
+                }
+            }
 
         } 
 
