@@ -18,7 +18,7 @@ function onSignIn(googleUser) {
                 var result = JSON.parse(data)
                 
                 if(result['success']) {
-                    console.log(uid)
+                    //console.log(uid)
                     var uid = result['userid']
                     window.location.href = "/projects.html?id=" + uid            //Go to user's projects page
                 } else {

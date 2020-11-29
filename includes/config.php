@@ -2,7 +2,7 @@
 
 session_start(); 
 
-$conn = pg_connect(sprintf("host='/cloudsql/cs465fullstackkanban:us-west1:cs465fullstackkanban' dbname=%s user=%s password=%s",
+$conn = pg_connect(sprintf('host=127.0.0.1 port=8000 dbname=%s user=%s password=%s',
     'kanban',
     'postgres',
     'cs465psu'
