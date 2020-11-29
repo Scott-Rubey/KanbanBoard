@@ -13,8 +13,20 @@ function onSignIn(googleUser) {
             imageurl: profileImage
         }, 
         success: function(data) {
-            console.log(data)
-            window.location.href = "http://localhost:8000/projects.html"            //Go to user's projects page
+            if(data) {
+                console.log(data)
+                var result = JSON.parse(data)
+                
+                if(result['success']) {
+                    //console.log(uid)
+                    var uid = result['userid']
+                    window.location.href = "/projects.html?id=" + uid            //Go to user's projects page
+                } else {
+                    console.log("UID could not be retrieved!")
+                }
+
+            }
+            console.log("Login.php returned nothing")
         },
         error: function(data) {
             console.log(data)

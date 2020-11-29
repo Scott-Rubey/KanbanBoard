@@ -1,6 +1,6 @@
 <?php 
 
-include('config.php');                                                                                //Array of user's projects
+include('config.php');                                                                                
 
 /* 
 * This file returns the total system stats, irrespective of the user currently logged in. 

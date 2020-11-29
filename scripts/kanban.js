@@ -88,7 +88,8 @@ function expandTask(e){
 
   //Project ID taken from query string
   //Used for validation by php 
-  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  var urlString = window.location.search
+  var projectId = window.location.search.slice(1, urlString.length).split('&')[0].split('=')[1]
   console.log(projectId)
 
   if(!taskId) {
@@ -121,7 +122,7 @@ function expandTask(e){
         }
       }
 
-      console.log(result[targetTask].taskid)
+      //console.log(result[targetTask].taskid)
 
       //capture fields from associated row in DB
       var taskName = result[targetTask].taskname;
@@ -180,14 +181,16 @@ function expandTask(e){
 function createDeleteBtn(taskid) {
 
   //Get projectID so close button references ID in query string upon refresh 
-  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  var urlString = window.location.search
+  var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
+  var projectId = window.location.search.slice(1, urlString.length).split('&')[0].split('=')[1]
   var taskID = taskid
 
   if(!projectId) {
     console.log("ProjectID not set for task popup delete button")
   } else {
-    var loc = "http://localhost:8000/kanban.html?id=" + projectId
-    console.log("Link: " + loc)
+    var loc = "/kanban.html?id=" + projectId + "&uid=" + uid
+    //console.log("Link: " + loc)
   }
 
   console.log(taskID)
@@ -237,13 +240,15 @@ $('body').on('click', '.deleteBtn', function() {
 function createCloseBtn(e) {
 
   //Get projectID so close button references ID in query string upon refresh 
-  var projectId = window.location.search.slice(1, window.location.search.length).split('=')[1]
+  var urlString = window.location.search
+  var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
+  var projectId = window.location.search.slice(1, urlString.length).split('&')[0].split('=')[1]
 
   if(!projectId) {
     console.log("ProjectID not set for task popup close button")
   } else {
-    var loc = "http://localhost:8000/kanban.html?id=" + projectId
-    console.log("Link: " + loc)
+    var loc = "/kanban.html?id=" + projectId + "&uid=" + uid
+    //console.log("Link: " + loc)
   }
 
   var close = document.createElement("input");
@@ -403,9 +408,9 @@ function updateTaskStatus(src, status) {
   // console.log(src.id)
   // console.log(status)
   // console.log(taskid)
-
   var urlString = window.location.search
-  var projectid = urlString.slice(1, urlString.length).split('=')     //Get projectID from query string
+  var projectId = window.location.search.slice(1, urlString.length).split('&')[0].split('=')[1]
+
   
   if(!src) {
     console.log("Src taskbox not set correctly")
@@ -419,7 +424,7 @@ function updateTaskStatus(src, status) {
   
   var taskid = src.id.split("-")[1]
 
-  if(!projectid) {
+  if(!projectId) {
     console.log("ID was not set correctly")
     return 
   }
@@ -427,7 +432,7 @@ function updateTaskStatus(src, status) {
   $.ajax({
     type: 'POST', 
     data: {
-      'projectid': projectid[1], 
+      'projectid': projectId, 
       'taskStatus': status,
       'taskID': taskid
     }, 
@@ -558,20 +563,26 @@ function addDescriptionBox(newTaskForm){
 }
 
 function addButtons(newTaskForm){
+
+    var urlString = window.location.search
+    var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
+    var projectId = window.location.search.slice(1, urlString.length).split('&')[0].split('=')[1]
+    var loc = "/kanban.html?id=" + projectId + "&uid=" + uid
+
     //create submit button
     var submit = document.createElement("input");
     submit.setAttribute("type", "submit");
     submit.setAttribute("id", "submitBtn");
-    submit.setAttribute("value", "Submit");
+    submit.setAttribute("onClick", "window.location.href=" + "'" + loc + "'");
     submit.setAttribute("class", "button form");
 
     //create reset button
     var reset = document.createElement("input");
-    reset.setAttribute("type", "button");
+    reset.setAttribute("type", "submit");
     reset.setAttribute("id", "resetBtn");
     reset.setAttribute("value", "Cancel");
     reset.setAttribute("class", "button form");
-    reset.setAttribute("onClick", "window.location.href='kanban.html'");
+    reset.setAttribute("onClick", "window.location.href=" + "'" + loc + "'");
 
     //add to form
     newTaskForm.appendChild(reset);
@@ -644,8 +655,11 @@ function drag(form) {
 //Takes ID from query string and uses GET with php file to retrieve all tasks for projectID
 function populateTasks() {
 
-  var urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('=')
+  // var urlString = window.location.search
+  // var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
+  urlString = window.location.search
+  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]
+  //console.log("PID: " + id)
   
   if(!id) { 
     console.log("Project ID is not in query string -- Line 562")
@@ -653,7 +667,7 @@ function populateTasks() {
 
   $.ajax({
       type: 'GET', 
-      data: {'id': id[1]},
+      data: {'id': id},
       url: '../includes/kanban.php', 
   })
   .done(function(data) {
@@ -712,7 +726,9 @@ $('body').on('submit', 'form', function(e) {
 
   e.preventDefault()
   var urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('=')
+  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]
+  var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
+  
 
   var priority = document.getElementById('priorityBtn')
   var taskName = $('#newTaskBox').val()
@@ -755,7 +771,7 @@ $('body').on('submit', 'form', function(e) {
           if(data.duplicate == true) {
               alert("You already have a task by that name.")
           } 
-          window.location.href = "http://localhost:8000/kanban.html?id=" + id[1]
+          window.location.href = "/kanban.html?id=" + id + "&uid" + uid
       }
   })
   .fail(function(data) {

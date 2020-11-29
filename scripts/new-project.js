@@ -1,7 +1,9 @@
-$(document).ready(function() {
+$(window).on('load', function() {
 
-    $('#projectform').submit(function(e) {
+    $('#projectform').on('submit', function(e) {
         e.preventDefault()
+
+        var uid = window.location.search.slice(1, window.location.search.length).split('=')[1]
 
         var collab = $('#collaborators').val()
         if(collab) {
@@ -21,13 +23,13 @@ $(document).ready(function() {
             data: formData,
         })
         .done(function(data) {
+            console.log(data)
             var data = JSON.parse(data)
-            //console.log(data)
             if(data.success) {
                 if(data.duplicate == true) {
                     alert("You already have a project by that name.")
                 } else {
-                    window.location.href = "http://localhost:8000/kanban.html?id=" + data.projectid      //Go back to user's projects page
+                    window.location.href = "/kanban.html?id=" + data.projectid + "&uid=" + uid     //Go back to user's projects page
                 }
             }
         })

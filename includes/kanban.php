@@ -25,5 +25,8 @@ else {
 $tasks = pg_fetch_all($q);
 
 http_response_code(200); 
-echo json_encode(array('tasks'=>$tasks, 'projectname'=>$projname)); 
+echo json_encode(array(
+    'tasks'=>$tasks, 
+    'projectname'=>$projname
+)); 
 ?>

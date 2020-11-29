@@ -25,11 +25,15 @@ if($result == "") {                       //User not located in database via ema
 
 } else {
 
-  $_SESSION['userid'] = $result;        //User already exists 
+  $userid = $result;
+  $_SESSION['userid'] = $userid;        //User already exists 
 
 }
 
 http_response_code(200); 
-echo json_encode(array('success'=>true)); 
+echo json_encode(array(
+    'success'=>true,
+    'userid'=>$userid
+)); 
 
 ?>
