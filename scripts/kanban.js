@@ -658,7 +658,7 @@ function populateTasks() {
   // var urlString = window.location.search
   // var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
   urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]
+  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]   //Project ID
   //console.log("PID: " + id)
   
   if(!id) { 
@@ -726,7 +726,7 @@ $('body').on('submit', 'form', function(e) {
 
   e.preventDefault()
   var urlString = window.location.search
-  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]
+  var id = urlString.slice(1, urlString.length).split('&')[0].split('=')[1]   //Project ID
   var uid = urlString.slice(1, urlString.length).split('&')[1].split('=')[1]
   
 
