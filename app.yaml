@@ -1,0 +1,19 @@
+runtime: php
+env: flex 
+
+handlers: 
+# site root
+- url: /
+  static_files: index.html
+  upload: index.html
+
+- url: /index
+  static_files: index.html
+  upload: index.html
+
+beta_settings: 
+  cloud_sql_instances: "cs465fullstackkanban:us-west1:cs465fullstackkanban"
+
+runtime_config: 
+  document_root: .
+
